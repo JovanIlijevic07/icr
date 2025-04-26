@@ -1,0 +1,26 @@
+<div *ngIf="flights">
+
+    <div class="row mb-3">
+        <div class="col-sm-4" *ngFor="let flight of flights.content">
+            <div class="card">
+                <img [src]="[webService.getDestinationImage(flight.destination)]" class="card-img-top" [alt]="flight.destination">
+                <div class="card-body">
+                    <h3 class="card-title">{{flight.destination}}</h3>
+                    <p class="card-text">{{flight.flightNumber}}</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Scheduled At: <strong>{{formatDate(flight.scheduledAt)}}</strong></li>
+                </ul>
+                <div class="card-body">
+                    <a href="#" class="btn btn-primary" routerLink="{{'/flight/'+flight.id}}">
+                        <i class="fa-solid fa-up-right-from-square"></i> Details</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="w-100 mb-3">
+        <iframe class="mx-auto" height="600" [src]="getMapUrl() | safe" width="100%" allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade" id="gmaps"></iframe>
+    </div>
+
+</div>

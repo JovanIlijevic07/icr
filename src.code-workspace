@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "../../Aimbot-V3-main/src"
+		}
+	],
+	"settings": {},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": []
+	}
+}

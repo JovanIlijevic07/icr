@@ -1,0 +1,15 @@
+
+<div *ngIf="flight">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a routerLink="Home">Home</a>
+        </li>
+          <li class="breadcrumb-item">
+            <a routerLink="/search">Flights</a>
+        </li>
+          <li class="breadcrumb-item active" aria-current="page">{{flight.destination}} ({{flight.flightNumber}})</li>
+        </ol>
+      </nav>
+      <pre>{{flight | json}} </pre>
+</div>
