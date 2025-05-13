@@ -29,8 +29,5 @@ export class HomeComponent implements OnInit {
     return `https://www.google.com/maps?output=embed&q=${this.flights?.content[0].destination}`
   }
 
-  public formatDate(iso:string) {
-    return new Date(iso).toLocaleString('sr-RS')
-  }
 
 }

@@ -1,15 +1,53 @@
-
 <div *ngIf="flight">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item">
-            <a routerLink="Home">Home</a>
-        </li>
-          <li class="breadcrumb-item">
-            <a routerLink="/search">Flights</a>
-        </li>
-          <li class="breadcrumb-item active" aria-current="page">{{flight.destination}} ({{flight.flightNumber}})</li>
-        </ol>
-      </nav>
-      <pre>{{flight | json}} </pre>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a routerLink="Home">Home</a>
+      </li>
+      <li class="breadcrumb-item">
+        <a routerLink="/search">Flights</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">{{flight.destination}} ({{flight.flightNumber}})</li>
+    </ol>
+  </nav>
+  <div class="card mb-3" style="max-width: 100%;">
+    <div class="row g-0">
+      <div class="col-md-7">
+        <img src="{{webService.getDestinationImage(flight.destination)}}" class="img-fluid rounded-start"
+          alt="{{flight.destination}}">
+      </div>
+      <div class="col-md-5">
+        <div class="card-body">
+          <h3 class="card-title">{{flight.destination}}</h3>
+          <p class="card-text"><small class="text-muted">{{flight.flightKey}}</small></p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <strong>Schedulet At:</strong>{{webService.formatDate(flight.scheduledAt)}}
+          </li>
+          <li class="list-group-item">
+            <strong>Estimated At:</strong>{{webService.formatDate(flight.estimatedAt)}}
+          </li>
+          <li class="list-group-item">
+            <strong>Plane Model:</strong>{{webService.formatValue(flight.plane)}}
+          </li>
+          <li class="list-group-item">
+            <strong>Gate:</strong>{{webService.formatValue(flight.gate)}}
+          </li>
+        </ul>
+        <div class="card-body">
+          <a routerLink="/" class="btn btn-sm btn-primary">
+            <i class="fa-solid fa-house">Homepage</i>
+          </a>
+          <button type="button" class="btn btn-sm btn-primary ms-1">
+            <i class="fa-solid fa-floppy-disk">Save to Favourites</i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="w-100 mb-3">
+    <iframe class="mx-auto" height="300" [src]="getMapUrl() | safe" width="100%" allowfullscreen="" loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade" id="gmaps"></iframe>
+  </div>
 </div>

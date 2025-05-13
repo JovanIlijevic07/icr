@@ -9,7 +9,7 @@ export interface FlightModel {
     "destination": string,
     "scheduledAt": string,
     "estimatedAt": string | null,
-    "connectedType": number,
+    "connectedType": string,
     "connectedFlight": string | null,
     "plane": string,
     "gate": string | null,

@@ -4,10 +4,11 @@ import { WebService } from '../web.service';
 import { FlightModel } from '../../models/flight.model';
 import { JsonPipe, NgIf } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { SafePipe } from '../safe.pipe';
 
 @Component({
   selector: 'app-flight',
-  imports: [JsonPipe,HttpClientModule,NgIf,RouterLink],
+  imports: [HttpClientModule,NgIf,RouterLink,SafePipe],
   templateUrl: './flight.component.html',
   styleUrl: './flight.component.css'
 })
@@ -19,9 +20,16 @@ export class FlightComponent {
   constructor(private route: ActivatedRoute) {
     this.webService = new WebService
     route.params.subscribe(params=> {
-      this.webService.getFlightById(params['id']).subscribe(rsp=>this.flight=rsp)
+      const id = params['id']
+
+      this.webService.getFlightById(id)
+      .subscribe(rsp=>this.flight=rsp)
     })
 
+  }
+
+  public getMapUrl(): string {
+    return `https://www.google.com/maps?output=embed&q=${this.flight?.destination}`
   }
 
 }

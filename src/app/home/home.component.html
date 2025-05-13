@@ -9,7 +9,7 @@
                     <p class="card-text">{{flight.flightNumber}}</p>
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Scheduled At: <strong>{{formatDate(flight.scheduledAt)}}</strong></li>
+                    <li class="list-group-item">Scheduled At: <strong>{{webService.formatDate}}</strong></li>
                 </ul>
                 <div class="card-body">
                     <a href="#" class="btn btn-primary" routerLink="{{'/flight/'+flight.id}}">
