@@ -8,17 +8,28 @@ import { FlightModel } from '../models/flight.model';
 })
 export class WebService {
 
+  private static instance: WebService
   private baseUrl: string
   private client: HttpClient
 
-  constructor() {
+  private constructor() {
     this.baseUrl = "https://flight.pequla.com/api"
     this.client = inject(HttpClient)
   }
 
-  public getRecomendedFlights() {
-    const url = `${this.baseUrl}/flight?page=0&size=3&sort=scheduledAt,desc&type=departure`
+  public static getInstance() {
+    if (this.instance == undefined)
+      this.instance = new WebService()
+    return this.instance
+  }
+
+  public getFlights(page = 0, size=10,sort="scheduledAt,desc") {
+    const url = `${this.baseUrl}/flight?page=${page}&size=${size}&sort=${sort}&type=departure`
     return this.client.get<PageModel<FlightModel>>(url)
+  }
+
+  public getRecomendedFlights() {
+    return this.getFlights(0,3)
   }
 
   public getFlightById(id:number){

@@ -18,7 +18,7 @@ export class FlightComponent {
   public flight:FlightModel | null=null
 
   constructor(private route: ActivatedRoute) {
-    this.webService = new WebService
+    this.webService =WebService.getInstance()
     route.params.subscribe(params=> {
       const id = params['id']
 
