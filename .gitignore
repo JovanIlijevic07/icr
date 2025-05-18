@@ -40,3 +40,8 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Rasa Chatbot files 
+/chatbot/.rasa
+/chatbot/models 
+/chatbot/actions/__pycache__

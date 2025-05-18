@@ -6,6 +6,7 @@ import { FlightModel } from '../../models/flight.model';
 import { SafePipe } from '../safe.pipe';
 import { RouterLink } from '@angular/router';
 import { WebService } from '../web.service';
+import { Pet } from '../../models/pet.model';
 
 @Component({
   selector: 'app-home',
@@ -16,18 +17,20 @@ import { WebService } from '../web.service';
 export class HomeComponent implements OnInit {
   
   public webService:WebService
-  public flights: PageModel<FlightModel> | undefined = undefined
+  public pets: Pet[]=[]
 
   constructor() {
       this.webService =WebService.getInstance()
   }
   ngOnInit(): void {
-    this.webService.getRecomendedFlights().subscribe(res => this.flights = res)
+    this.webService.getAllPets().subscribe(pets => {
+      this.pets = pets.slice(0, 4); // Prikaz samo 4 ljubimca
+    });
   }
 
-  public getMapUrl(): string {
-    return `https://www.google.com/maps?output=embed&q=${this.flights?.content[0].destination}`
-  }
+ // public getMapUrl(): string {
+ //   return `https://www.google.com/maps?output=embed&q=${this.flights?.content[0].destination}`
+ // }
 
 
 }

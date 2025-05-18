@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { PageModel } from '../models/page.model';
 import { FlightModel } from '../models/flight.model';
+import { Observable } from 'rxjs';
+import { Pet } from '../models/pet.model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +15,7 @@ export class WebService {
   private client: HttpClient
 
   private constructor() {
-    this.baseUrl = "https://flight.pequla.com/api"
+    this.baseUrl = "http://localhost:3000/api"
     this.client = inject(HttpClient)
   }
 
@@ -22,6 +24,27 @@ export class WebService {
       this.instance = new WebService()
     return this.instance
   }
+
+  public getAllPets(): Observable<Pet[]> {
+  return this.client.get<Pet[]>(this.baseUrl + '/pets');
+}
+//
+//public getPetImg1(pet: Pet): string {
+//  if (!pet.image_url || pet.image_url.trim() === '') {
+//    return 'assets/images/default.jpg';
+//  }
+//  return `assets/images/${pet.image_url}`;
+//}
+//
+public getPetImg(pet: Pet): string {
+  if (!pet.image_url || pet.image_url.trim() === '') {
+    return 'assets/images/default.jpg';
+  }
+  return `assets/images/${pet.image_url}`;
+}
+
+
+
 
   public getFlights(page = 0, size=10,sort="scheduledAt,desc") {
     const url = `${this.baseUrl}/flight?page=${page}&size=${size}&sort=${sort}&type=departure`
