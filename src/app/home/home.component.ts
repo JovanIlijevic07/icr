@@ -28,9 +28,4 @@ export class HomeComponent implements OnInit {
     });
   }
 
- // public getMapUrl(): string {
- //   return `https://www.google.com/maps?output=embed&q=${this.flights?.content[0].destination}`
- // }
-
-
 }

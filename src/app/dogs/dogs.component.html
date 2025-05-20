@@ -1,0 +1,10 @@
+<div *ngIf="dogs.length > 0">
+  <div *ngFor="let dog of dogs">
+    <h2>{{ dog.name }}</h2>
+    <img [src]="webService.getPetImg(dog)" width="200" height="200" />
+  </div>
+</div>
+<div></div>
+<div *ngIf="dogs.length === 0">
+  <p>Nema nijednog psa za prikaz.</p>
+</div>
