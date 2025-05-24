@@ -1,10 +1,10 @@
 export interface User {
   id: number;
-  fullName: string;
+  name: string;
   email: string;
-  phone: string;
-  address: string;
-  favoriteSpecies: string[];  
-  username: string;
   password: string;
+  phone: string;
+  adress: string[];  
+  favourite_types: string;
+  
 }

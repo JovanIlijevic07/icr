@@ -1,0 +1,15 @@
+<!-- login.component.html -->
+<div class="container mt-5">
+  <h2>Prijava</h2>
+  <form (ngSubmit)="login()">
+    <div class="mb-3">
+      <label for="name" class="form-label">Korisničko ime</label>
+      <input type="text" class="form-control" id="name" [(ngModel)]="name" name="name">
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label">Lozinka</label>
+      <input type="password" class="form-control" id="password" [(ngModel)]="password" name="password">
+    </div>
+    <button type="submit" class="btn btn-primary">Prijavi se</button>
+  </form>
+</div>

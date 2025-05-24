@@ -1,0 +1,87 @@
+<div class="container mt-4">
+  <div class="row">
+    <!-- Leva strana: Filteri -->
+    <div class="col-md-3">
+      <h5>Filteri</h5>
+      <form [formGroup]="filterForm">
+        <!-- Vrsta -->
+        <div class="mb-3">
+          <label for="species" class="form-label">Vrsta</label>
+          <select id="species" class="form-select" formControlName="species">
+            <option value="">Sve</option>
+            <option value="pas">Pas</option>
+            <option value="mačka">Mačka</option>
+            <option value="ptica">Ptica</option>
+          </select>
+        </div>
+
+        <!-- Starost -->
+        <div class="mb-3">
+          <label for="age" class="form-label">Godine</label>
+          <input type="number" id="age" class="form-control" formControlName="age">
+        </div>
+
+        <!-- Veličina -->
+        <div class="mb-3">
+          <label for="size" class="form-label">Veličina</label>
+          <select id="size" class="form-select" formControlName="size">
+            <option value="">Sve</option>
+            <option value="mala">Mala</option>
+            <option value="srednja">Srednja</option>
+            <option value="velika">Velika</option>
+          </select>
+        </div>
+
+        <!-- Cena -->
+        <div class="mb-3">
+          <label class="form-label">Cena (RSD)</label>
+          <div class="d-flex gap-2">
+            <input type="number" class="form-control" placeholder="Min" formControlName="minPrice">
+            <input type="number" class="form-control" placeholder="Max" formControlName="maxPrice">
+          </div>
+        </div>
+
+        <!-- Poreklo -->
+        <div class="mb-3">
+          <label for="origin" class="form-label">Poreklo</label>
+          <select id="origin" class="form-select" formControlName="origin">
+            <option value="">Sva porekla</option>
+            <option *ngFor="let o of origins" [value]="o">{{ o }}</option>
+          </select>
+        </div>
+
+        <!-- Dugme za pretragu -->
+        <button type="button" class="btn btn-primary w-100" (click)="applyFilters()">Pretraži</button>
+      </form>
+    </div>
+
+     <!-- DESNA STRANA: Prikaz ljubimaca -->
+    <div class="col-md-8">
+      <h5>Pronađeni ljubimci</h5>
+      <div class="row">
+        <div class="col-md-6 mb-4" *ngFor="let pet of filteredPets">
+          <div class="card h-100 shadow-sm">
+            <img *ngIf="pet.image_url" [src]="webService.getPetImg(pet)" class="card-img-top" alt="{{ pet.name }}" />
+            <div class="card-body">
+              <h5 class="card-title">{{ pet.name }}</h5>
+              <p class="card-text">
+                Vrsta: {{ pet.species }}<br />
+                Starost: {{ pet.age }}<br />
+                Veličina: {{ pet.size }}<br />
+                Poreklo: {{ pet.origin }}<br />
+                Cena: {{ pet.price }} RSD
+              </p>
+            </div>
+            <div class="card-footer text-end">
+              <button class="btn btn-sm btn-success">Dodaj u korpu</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="filteredPets.length === 0" class="alert alert-warning mt-3">
+        Nema ljubimaca koji odgovaraju izabranim filterima.
+      </div>
+    </div>
+  </div>
+</div>

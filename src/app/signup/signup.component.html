@@ -1,0 +1,34 @@
+<form (ngSubmit)="onSubmit(form)" #form="ngForm" class="p-4">
+  <div class="mb-3">
+    <label for="name" class="form-label">Name</label>
+    <input
+      type="text"
+      class="form-control"
+      id="name"
+      name="name"
+      [(ngModel)]="formModel.name"
+      required
+    />
+  </div>
+
+  <div class="mb-3">
+    <label for="password" class="form-label">Password</label>
+    <input
+      type="password"
+      class="form-control"
+      id="password"
+      name="password"
+      [(ngModel)]="formModel.password"
+      required
+    />
+  </div>
+
+  <button type="submit" class="btn btn-success">Sign In</button>
+
+  <div *ngIf="loginSuccess === true" class="text-success mt-3">
+     Uspešno prijavljen!
+  </div>
+  <div *ngIf="loginSuccess === false" class="text-danger mt-3">
+     Ne postoji korisnik sa tim podacima.
+  </div>
+</form>

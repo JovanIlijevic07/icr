@@ -1,0 +1,8 @@
+<div *ngIf="pet" class="container mt-4">
+  <h2>{{ pet.name }}</h2>
+  <img [src]="webService.getPetImg(pet)" class="img-fluid mb-3" [alt]="pet.name">
+  <p><strong>Vrsta:</strong> {{ pet.species }}</p>
+  <p><strong>Opis:</strong> {{ pet.description }}</p>
+  <p><strong>Cena:</strong> {{ pet.price }}</p>
+  <button class="btn btn-success" (click)="addToCart(pet)">Dodaj u korpu</button>
+</div>

@@ -1,22 +1,21 @@
-import { HttpClientModule } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component } from '@angular/core';
 import { WebService } from '../web.service';
 import { Pet } from '../../models/pet.model';
-import { NgFor, NgIf } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { NgIf, NgFor } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { CartService } from '../basket.service';
 
 @Component({
-  selector: 'app-dogs',
-  standalone:true,
+  selector: 'app-birds',
   imports: [HttpClientModule,RouterLink,NgIf,NgFor],
-  templateUrl: './dogs.component.html',
-  styleUrl: './dogs.component.css'
+  templateUrl: './birds.component.html',
+  styleUrl: './birds.component.css'
 })
-export class DogsComponent implements OnInit {
+export class BirdsComponent {
 
-  public webService:WebService
-  dogs: Pet[] = [];
+public webService:WebService
+  public birds: Pet[] = [];
 
  constructor(private cartService: CartService) {
       this.webService =WebService.getInstance()
@@ -25,8 +24,8 @@ export class DogsComponent implements OnInit {
   ngOnInit(): void {
     this.webService.getAllPets().subscribe((pets: Pet[]) => {
       console.log('Svi ljubimci:', pets);
-      this.dogs = pets.filter(pet => pet.species?.toLowerCase().trim() === 'pas');
-      console.log('Filtrirani psi:', this.dogs);
+      this.birds = pets.filter(pet => pet.species?.toLowerCase().trim() === 'ptica');
+      console.log('Filtrirani psi:', this.birds);
     });
   }
 
