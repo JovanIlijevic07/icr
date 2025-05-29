@@ -12,15 +12,16 @@ import { NgIf } from '@angular/common';
 export class AppComponent {
   title = 'interakcijaProjekat';
   year = new Date().getFullYear()
-  constructor(public authService: AuthService, private router: Router) {}
+  constructor(private router: Router,public authService: AuthService) {}
 
   goToProfile(event: Event): void {
     event.preventDefault();
     this.router.navigate(['/profile']);
   }
 
-  logout(): void {
+ /* logout(): void {
     this.authService.logout();
     this.router.navigate(['/']);
   }
+    */
 }

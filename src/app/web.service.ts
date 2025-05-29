@@ -46,6 +46,10 @@ export class WebService {
   public registerUser(user: User): Observable<User> {
     return this.client.post<User>(`${this.baseUrl}/users`, user);
   }
+  
+  loginUser(name: string, password: string): Observable<User> {
+  return this.client.post<User>(`${this.baseUrl}/login`, { name, password });
+}
 
   getOrigins() {
     return this.client.get<string[]>(this.baseUrl + '/pet-origins');

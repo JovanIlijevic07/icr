@@ -1,34 +1,68 @@
-<form (ngSubmit)="onSubmit(form)" #form="ngForm" class="p-4">
-  <div class="mb-3">
-    <label for="name" class="form-label">Name</label>
-    <input
-      type="text"
-      class="form-control"
-      id="name"
-      name="name"
-      [(ngModel)]="formModel.name"
-      required
-    />
-  </div>
+<div class="container mt-5" style="max-width: 600px;">
+  <h2>Registracija</h2>
+  <form (ngSubmit)="signup()" #signupForm="ngForm">
 
-  <div class="mb-3">
-    <label for="password" class="form-label">Password</label>
-    <input
-      type="password"
-      class="form-control"
-      id="password"
-      name="password"
-      [(ngModel)]="formModel.password"
-      required
-    />
-  </div>
+    <!-- Ime -->
+    <div class="mb-3">
+      <label for="name" class="form-label">Ime</label>
+      <input type="text" class="form-control" id="name" name="name" [(ngModel)]="user.name" required>
+    </div>
 
-  <button type="submit" class="btn btn-success">Sign In</button>
+    <!-- Email -->
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control" id="email" name="email" [(ngModel)]="user.email" required>
+    </div>
 
-  <div *ngIf="loginSuccess === true" class="text-success mt-3">
-     Uspešno prijavljen!
-  </div>
-  <div *ngIf="loginSuccess === false" class="text-danger mt-3">
-     Ne postoji korisnik sa tim podacima.
-  </div>
-</form>
+    <!-- Lozinka -->
+    <div class="mb-3">
+      <label for="password" class="form-label">Lozinka</label>
+      <input type="password" class="form-control" id="password" name="password" [(ngModel)]="user.password" required>
+    </div>
+
+    <!-- Telefon -->
+    <div class="mb-3">
+      <label for="phone" class="form-label">Telefon (format: 06x/xxxxxxx)</label>
+      <input type="tel"
+             class="form-control"
+             id="phone"
+             name="phone"
+             [(ngModel)]="user.phone"
+             pattern="^06[0-9]/[0-9]{6,7}$"
+             required
+             placeholder="npr. 064/1234567"
+             title="Unesite mobilni broj u formatu 06x/xxxxxxx">
+    </div>
+
+    <!-- Adresa -->
+    <div class="mb-3">
+      <label for="adress" class="form-label">Adresa</label>
+      <input type="text" class="form-control" id="adress" name="adress" [(ngModel)]="user.adress[0]" required>
+    </div>
+
+    <!-- Omiljeni tipovi -->
+    <div class="mb-3">
+      <label class="form-label">Omiljeni tipovi ljubimaca (možete više)</label>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="pas" value="pas" (change)="toggleType('pas')">
+        <label for="pas" class="form-check-label">Pas</label>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="macka" value="mačka" (change)="toggleType('mačka')">
+        <label for="macka" class="form-check-label">Mačka</label>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="ptica" value="ptica" (change)="toggleType('ptica')">
+        <label for="ptica" class="form-check-label">Ptica</label>
+      </div>
+    </div>
+
+    <!-- Poruka o grešci -->
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Dugme za registraciju -->
+    <button type="submit" class="btn btn-primary">Registruj se</button>
+  </form>
+</div>

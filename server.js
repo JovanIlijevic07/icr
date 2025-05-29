@@ -87,15 +87,20 @@ app.get('/api/pets/:id', (req, res) => {
 app.post('/api/users', (req, res) => {
   const user = req.body;
 
-  const checkEmailSql = 'SELECT * FROM users WHERE email = ?';
-  db.query(checkEmailSql, [user.email], (err, results) => {
+  // Prvo proveravamo da li već postoji korisnik sa istim email-om ili telefonom
+  const checkSql = 'SELECT * FROM users WHERE email = ? OR phone = ?';
+  db.query(checkSql, [user.email, user.phone], (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
 
     if (results.length > 0) {
-      return res.status(409).json({ message: 'User with this email already exists' });
+      return res.status(409).json({ message: 'Korisnik sa istim email-om ili telefonom već postoji.' });
     }
 
-    const insertSql = 'INSERT INTO users (name, email, password, phone, address, favorite_types) VALUES (?, ?, ?, ?, ?, ?)';
+    // Ako ne postoji, ubacujemo korisnika
+    const insertSql = `
+      INSERT INTO users (name, email, password, phone, address, favorite_types)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `;
     const values = [
       user.name,
       user.email,
@@ -107,7 +112,8 @@ app.post('/api/users', (req, res) => {
 
     db.query(insertSql, values, (err, result) => {
       if (err) return res.status(500).json({ error: err.message });
-      res.json({ message: 'User added', id: result.insertId });
+
+      res.status(201).json({ message: 'Uspešno ste registrovani!', id: result.insertId });
     });
   });
 });

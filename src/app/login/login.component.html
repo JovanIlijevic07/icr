@@ -1,15 +1,49 @@
-<!-- login.component.html -->
 <div class="container mt-5">
   <h2>Prijava</h2>
-  <form (ngSubmit)="login()">
+
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <form (ngSubmit)="login()" #loginForm="ngForm">
     <div class="mb-3">
       <label for="name" class="form-label">Korisničko ime</label>
-      <input type="text" class="form-control" id="name" [(ngModel)]="name" name="name">
+      <input
+        type="text"
+        id="name"
+        class="form-control"
+        name="name"
+        [(ngModel)]="name"
+        required
+        #nameInput="ngModel"
+      />
+      <div *ngIf="nameInput.invalid && (nameInput.dirty || nameInput.touched)" class="text-danger">
+        Korisničko ime je obavezno.
+      </div>
     </div>
+
     <div class="mb-3">
       <label for="password" class="form-label">Lozinka</label>
-      <input type="password" class="form-control" id="password" [(ngModel)]="password" name="password">
+      <input
+        type="password"
+        id="password"
+        class="form-control"
+        name="password"
+        [(ngModel)]="password"
+        required
+        #passwordInput="ngModel"
+      />
+      <div *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)" class="text-danger">
+        Lozinka je obavezna.
+      </div>
     </div>
-    <button type="submit" class="btn btn-primary">Prijavi se</button>
+
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [disabled]="loginForm.invalid"
+    >
+      Prijavi se
+    </button>
   </form>
 </div>
