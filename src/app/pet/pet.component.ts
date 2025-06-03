@@ -15,12 +15,15 @@ export class PetComponent implements OnInit{
 
   public webService:WebService
   public pet!:Pet;
+  loggedIn: boolean = false
 
   constructor(private route: ActivatedRoute,private cartService: CartService) {
         this.webService =WebService.getInstance()
     }
 
     ngOnInit() {
+      this.loggedIn=this.webService.isLoggedIn();
+
     const petId = this.route.snapshot.paramMap.get('id');
     if (petId) {
       this.webService.getPetById(+petId).subscribe(pet => {

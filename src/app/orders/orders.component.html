@@ -1,0 +1,32 @@
+<div class="container mt-4">
+  <h2>Moje narudžbine</h2>
+
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  <div *ngIf="message" class="alert alert-success">{{ message }}</div>
+
+  <div *ngIf="orders.length === 0">Nemate nijednu narudžbinu.</div>
+
+  <div *ngFor="let order of orders" class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">Narudžbina #{{ order.id }}</h5>
+      <p>Status: <strong>{{ order.status }}</strong></p>
+      <p>Datum: {{ order.created_at | date:'short' }}</p>
+
+      <div *ngIf="canReview(order)">
+        <h6>Ostavite recenziju:</h6>
+        <label>Ocena (1-5):</label>
+        <input type="number" min="1" max="5" [(ngModel)]="reviewRatings[order.id]" />
+
+        <label>Komentar:</label>
+        <textarea rows="3" [(ngModel)]="reviewTexts[order.id]" class="form-control"></textarea>
+
+        <button class="btn btn-primary mt-2" (click)="submitReview(order)">Pošalji recenziju</button>
+      </div>
+
+      <div *ngIf="!canReview(order) && order.rating">
+        <p>Vaša ocena: {{ order.rating }}</p>
+        <!-- Ovde možeš prikazati i komentar ako ga čuvaš u bazi -->
+      </div>
+    </div>
+  </div>
+</div>

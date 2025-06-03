@@ -1,27 +1,49 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
-import { AuthService } from './auth.service';
-import { NgIf } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
+import { AuthService, UserStatus } from './auth.service';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { SafePipe } from './safe.pipe';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink,NgIf],
+  imports: [RouterOutlet, RouterLink,NgIf,HttpClientModule,SafePipe],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
   title = 'interakcijaProjekat';
   year = new Date().getFullYear()
-  constructor(private router: Router,public authService: AuthService) {}
 
-  goToProfile(event: Event): void {
-    event.preventDefault();
-    this.router.navigate(['/profile']);
+ public authService: AuthService
+
+  constructor( private router: Router) {
+    this.authService =AuthService.getInstance()
   }
 
- /* logout(): void {
+  ngOnInit() {
+    this.logUserStatus();
+  }
+
+  logUserStatus() {
+    const status: UserStatus = this.authService.getUserStatus();
+    console.log('Trenutni status korisnika je:', status);
+  }
+
+  get profileOrLoginLink(): string {
+    return this.authService.isLoggedIn() ? '/profile' : '/login';
+  }
+
+  goToProfileOrLogin() {
+    if (this.authService.isLoggedIn()) {
+      this.router.navigate(['/profile']);
+    } else {
+      this.router.navigate(['/login']);
+    }
+  }
+
+  logout(): void {
     this.authService.logout();
     this.router.navigate(['/']);
   }
-    */
 }

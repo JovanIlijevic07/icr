@@ -42,26 +42,55 @@
 <div *ngIf="pets">
 
     <div style="padding-top: 3rem;">
-        <h1>Najtraženije katekogorije</h1>
-        <div class="row mb-3 align-items-stretch">
-            <div class="col-sm-4" *ngFor="let pet of pets">
-                <div class="card h-100 d-flex rounded flex-column">
-                    <img [src]="webService.getPetImg(pet)" class="card-img-top" [alt]="pet.name"
-                        style="height: 250px; width: 100%; object-fit: cover;">
-                    <div class="card-body">
-                        <h3 class="card-title">{{pet.name}}</h3>
-                        <p class="card-text">{{pet.species}}</p>
-                    </div>
-
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><strong>{{pet.description}}</strong></li>
-                    </ul>
-                    <div class="card-body mt-auto">
-                        <a href="#" class="btn btn-primary" routerLink="{{'/pet/'+pet.id}}">
-                            <i class="fa-solid fa-up-right-from-square"></i> Details</a>
-                    </div>
-                </div>
-            </div>
+  <h1>Najtraženije kategorije</h1>
+  <div class="row mb-3 align-items-stretch">
+    <!-- Psi -->
+    <div class="col-sm-4">
+      <div class="card h-100 d-flex rounded flex-column">
+        <img src="assets/images/pas1.jpg" class="card-img-top" alt="Psi"
+          style="height: 250px; width: 100%; object-fit: contain;">
+        <div class="card-body">
+          <h3 class="card-title">Psi</h3>
+          <p class="card-text">Verni prijatelji i čuvari doma – pronađite svog savršenog psa.</p>
         </div>
+        <div class="card-body mt-auto">
+          <a routerLink="/dogs" class="btn btn-primary">
+            <i class="fa-solid fa-up-right-from-square"></i> Pogledaj pse</a>
+        </div>
+      </div>
     </div>
+
+    <!-- Mačke -->
+    <div class="col-sm-4">
+      <div class="card h-100 d-flex rounded flex-column">
+        <img src="assets/images/macka1.jpg" class="card-img-top" alt="Mačke"
+          style="height: 250px; width: 100%; object-fit: contain;">
+        <div class="card-body">
+          <h3 class="card-title">Mačke</h3>
+          <p class="card-text">Nezavisne i umiljate – mačke su savršen izbor za svakog ljubitelja.</p>
+        </div>
+        <div class="card-body mt-auto">
+          <a routerLink="/cats" class="btn btn-primary">
+            <i class="fa-solid fa-up-right-from-square"></i> Pogledaj mačke</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ptičice -->
+    <div class="col-sm-4">
+      <div class="card h-100 d-flex rounded flex-column">
+        <img src="assets/images/ptica1.jpg" class="card-img-top" alt="Ptice"
+          style="height: 250px; width: 100%; object-fit: contain;">
+        <div class="card-body">
+          <h3 class="card-title">Ptice</h3>
+          <p class="card-text">Šarene, vesele i pevušeće – ptice unose život u svaki dom.</p>
+        </div>
+        <div class="card-body mt-auto">
+          <a routerLink="/birds" class="btn btn-primary">
+            <i class="fa-solid fa-up-right-from-square"></i> Pogledaj ptice</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </div>

@@ -17,16 +17,19 @@ export class DogsComponent implements OnInit {
 
   public webService:WebService
   dogs: Pet[] = [];
+  loggedIn:boolean = false
 
  constructor(private cartService: CartService) {
       this.webService =WebService.getInstance()
   }
 
   ngOnInit(): void {
+    // Proveri da li je korisnik loginovan
+    this.loggedIn = this.webService.isLoggedIn();
+
+    // Učitaj pse
     this.webService.getAllPets().subscribe((pets: Pet[]) => {
-      console.log('Svi ljubimci:', pets);
       this.dogs = pets.filter(pet => pet.species?.toLowerCase().trim() === 'pas');
-      console.log('Filtrirani psi:', this.dogs);
     });
   }
 

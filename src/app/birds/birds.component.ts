@@ -16,16 +16,19 @@ export class BirdsComponent {
 
 public webService:WebService
   public birds: Pet[] = [];
+  loggedIn:boolean = false
 
  constructor(private cartService: CartService) {
       this.webService =WebService.getInstance()
   }
 
   ngOnInit(): void {
+    // Proveri da li je korisnik loginovan
+    this.loggedIn = this.webService.isLoggedIn();
+
+    // Učitaj pse
     this.webService.getAllPets().subscribe((pets: Pet[]) => {
-      console.log('Svi ljubimci:', pets);
       this.birds = pets.filter(pet => pet.species?.toLowerCase().trim() === 'ptica');
-      console.log('Filtrirani psi:', this.birds);
     });
   }
 
@@ -33,5 +36,4 @@ public webService:WebService
     this.cartService.addToCart(pet);
     alert(`${pet.name} je dodat u korpu!`);
   }
-
 }

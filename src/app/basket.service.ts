@@ -8,15 +8,35 @@ import { Pet } from '../models/pet.model';
 export class CartService {
   private cart: Pet[] = [];
 
-  addToCart(pet: Pet) {
-    this.cart.push(pet);
+  constructor() {
+    this.loadCart();
   }
 
-  getCart() {
+  private saveCart() {
+    localStorage.setItem('cart', JSON.stringify(this.cart));
+  }
+
+  private loadCart() {
+    const data = localStorage.getItem('cart');
+    this.cart = data ? JSON.parse(data) : [];
+  }
+
+  addToCart(pet: Pet) {
+    this.cart.push(pet);
+    this.saveCart();
+  }
+
+  getCart(): Pet[] {
     return this.cart;
+  }
+
+  removeFromCart(petId: number) {
+    this.cart = this.cart.filter(pet => pet.id !== petId);
+    this.saveCart();
   }
 
   clearCart() {
     this.cart = [];
+    this.saveCart();
   }
 }

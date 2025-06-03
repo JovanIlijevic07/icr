@@ -27,7 +27,13 @@ export class BasektComponent {
   }
   submitOrder() {
   const petIds = this.cartPets.map(p => p.id);
-  const userId = 1; // zameni sa ID-em trenutno prijavljenog korisnika
+
+  const user = this.webService.getUser(); // uzimamo korisnika
+  if (!user) {
+    alert('Niste ulogovani!');
+    return;
+  }
+  const userId = user.id; // uzimamo njegov ID
 
   this.webService.submitOrder(userId, petIds).subscribe({
     next: res => {
@@ -38,4 +44,12 @@ export class BasektComponent {
     error: err => console.error(err)
   });
 }
+
+removePetFromCart(petId: number) {
+  this.cartService.removeFromCart(petId);
+  this.cartPets = this.cartService.getCart();
+  this.totalPrice = this.cartPets.reduce((sum, pet) => sum + Number(pet.price), 0);
+}
+
+
 }

@@ -17,6 +17,7 @@ export class AllComponent implements OnInit {
   filteredPets: Pet[] = [];
   filterForm!: FormGroup;
   origins: string[] = [];
+  cart: Pet[] = [];
 
   constructor(private fb: FormBuilder) {
     this.webService =WebService.getInstance()
@@ -83,6 +84,25 @@ export class AllComponent implements OnInit {
         matchesSize &&
         matchesOrigin
       );
+    });
+  }
+
+  // Provera da li je korisnik ulogovan
+  isLoggedIn(): boolean {
+    return this.webService.isLoggedIn();
+  }
+
+  // Metoda za dodavanje ljubimca u korpu
+  addToCart(petId: number) {
+    const user = this.webService.getUser();
+    if (!user) {
+      alert('Morate biti ulogovani da biste dodali u korpu.');
+      return;
+    }
+
+    this.webService.submitOrder(user.id, [petId]).subscribe({
+      next: res => alert('Ljubimac je dodat u korpu!'),
+      error: err => alert('Greška prilikom dodavanja u korpu: ' + err.message)
     });
   }
 }

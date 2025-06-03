@@ -1,49 +1,53 @@
-<div class="container mt-5">
+<div class="login-container">
   <h2>Prijava</h2>
 
-  <div *ngIf="errorMessage" class="alert alert-danger">
-    {{ errorMessage }}
-  </div>
-
-  <form (ngSubmit)="login()" #loginForm="ngForm">
+  <form (ngSubmit)="login()" #loginForm="ngForm" novalidate>
     <div class="mb-3">
-      <label for="name" class="form-label">Korisničko ime</label>
+      <label for="email" class="form-label">Email:</label>
       <input
-        type="text"
-        id="name"
-        class="form-control"
-        name="name"
-        [(ngModel)]="name"
+        type="email"
+        id="email"
+        name="email"
+        [(ngModel)]="email"
         required
-        #nameInput="ngModel"
+        email
+        #emailModel="ngModel"
+        class="form-control"
       />
-      <div *ngIf="nameInput.invalid && (nameInput.dirty || nameInput.touched)" class="text-danger">
-        Korisničko ime je obavezno.
+      <div *ngIf="emailModel.invalid && emailModel.touched" class="text-danger">
+        Unesite validan email.
       </div>
     </div>
 
     <div class="mb-3">
-      <label for="password" class="form-label">Lozinka</label>
+      <label for="password" class="form-label">Lozinka:</label>
       <input
         type="password"
         id="password"
-        class="form-control"
         name="password"
         [(ngModel)]="password"
         required
-        #passwordInput="ngModel"
+        minlength="6"
+        #passwordModel="ngModel"
+        class="form-control"
       />
-      <div *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)" class="text-danger">
-        Lozinka je obavezna.
+      <div *ngIf="passwordModel.invalid && passwordModel.touched" class="text-danger">
+        Lozinka mora imati najmanje 6 karaktera.
       </div>
     </div>
 
-    <button
-      type="submit"
-      class="btn btn-primary"
-      [disabled]="loginForm.invalid"
-    >
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+
+    <button type="submit" class="btn btn-primary me-2" [disabled]="loginForm.invalid">
       Prijavi se
     </button>
+
+    
+
+  <a routerLink="/signup" class="btn btn-outline-secondary">Registruj se</a>
+
+    
   </form>
 </div>

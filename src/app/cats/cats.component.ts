@@ -16,16 +16,19 @@ export class CatsComponent implements OnInit{
 
 public webService:WebService
   public cats: Pet[] = [];
+  loggedIn:boolean = false
 
  constructor(private cartService: CartService) {
       this.webService =WebService.getInstance()
   }
 
   ngOnInit(): void {
+    // Proveri da li je korisnik loginovan
+    this.loggedIn = this.webService.isLoggedIn();
+
+    // Učitaj pse
     this.webService.getAllPets().subscribe((pets: Pet[]) => {
-      console.log('Svi ljubimci:', pets);
       this.cats = pets.filter(pet => pet.species?.toLowerCase().trim() === 'mačka');
-      console.log('Filtrirani psi:', this.cats);
     });
   }
 

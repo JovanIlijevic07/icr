@@ -1,8 +1,8 @@
 import { inject,Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
-import { User } from '../models/user.model';
+
 
 export type UserStatus = 'anonimus' | 'user';
 
@@ -10,39 +10,50 @@ export type UserStatus = 'anonimus' | 'user';
   providedIn: 'root'
 })
 export class AuthService {
-   // BehaviorSubject drži trenutno stanje korisnika, sa početnom vrednošću 'anonimus'
-  private currentUserSubject = new BehaviorSubject<UserStatus>('anonimus');
-
-  // Observable koji drugi mogu da slušaju da bi znali stanje ulogovanosti
-  public currentUser$: Observable<UserStatus> = this.currentUserSubject.asObservable();
+  private apiUrl = 'http://localhost:3000/api/auth';
+  private tokenKey = 'auth_token';
+  private userKey = 'user';
+  private http: HttpClient
+  private static instance: AuthService
 
   constructor() {
-    // Opcionalno: možeš inicijalizovati stanje iz localStorage ako želiš trajnu sesiju
-    const savedStatus = localStorage.getItem('userStatus') as UserStatus | null;
-    if (savedStatus) {
-      this.currentUserSubject.next(savedStatus);
-    }
+    this.http = inject(HttpClient)
+  }
+  public static getInstance() {
+    if (this.instance == undefined)
+      this.instance = new AuthService()
+    return this.instance
   }
 
-  // Metoda za login - menja stanje u 'user'
-  login() {
-    this.currentUserSubject.next('user');
-    localStorage.setItem('userStatus', 'user');
+
+   signup(data: any) {
+    return this.http.post(`${this.apiUrl}/signup`, data);
   }
 
-  // Metoda za logout - vraća stanje na 'anonimus'
+  login(email: string, password: string) {
+    return this.http.post<{ token: string, user: any }>(`${this.apiUrl}/login`, { email, password }).pipe(
+      tap(response => {
+        localStorage.setItem(this.tokenKey, response.token);
+        localStorage.setItem(this.userKey, JSON.stringify(response.user));
+      })
+    );
+  }
+
   logout() {
-    this.currentUserSubject.next('anonimus');
-    localStorage.removeItem('userStatus');
+    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.userKey);
   }
 
-  // Metoda koja vraća trenutno stanje (trenutnu vrednost)
-  getCurrentUserStatus(): UserStatus {
-    return this.currentUserSubject.value;
-  }
-
-  // Metoda da proveriš da li je korisnik ulogovan
   isLoggedIn(): boolean {
-    return this.currentUserSubject.value === 'user';
+    return !!localStorage.getItem(this.tokenKey);
+  }
+
+  getUserStatus(): UserStatus {
+  return this.isLoggedIn() ? 'user' : 'anonimus';
+}
+
+  getUser() {
+    const userJson = localStorage.getItem(this.userKey);
+    return userJson ? JSON.parse(userJson) : null;
   }
 }
