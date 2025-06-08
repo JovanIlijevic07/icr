@@ -4,6 +4,8 @@ import { Observable, tap } from 'rxjs';
 import { Pet } from '../models/pet.model';
 import { User } from '../models/user.model';
 import { Order } from '../models/order.model';
+import { RasaModel } from '../models/rasa.model';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({
   providedIn: 'root'
@@ -125,6 +127,29 @@ checkEmailExists(email: string) {
 
   submitReview(orderId: number, rating: number, comment: string): Observable<any> {
     return this.client.post(`${this.baseUrl}/orders/${orderId}/review`, { rating, comment });
+  }
+
+  private retrieveRasaSession() {
+    if (!localStorage.getItem('session'))
+      localStorage.setItem('session', uuidv4())
+
+    return localStorage.getItem('session')
+  }
+
+  public sendRasaMessage(value: string) {
+    const url = 'http://localhost:5005/webhooks/rest/webhook'
+    return this.client.post<RasaModel[]>(url,
+      {
+        sender: this.retrieveRasaSession(),
+        email: localStorage.getItem('active') ? localStorage.getItem('active') : null,
+        message: value
+      },
+      {
+        headers: {
+          'Accept': 'application/json'
+        }
+      }
+    )
   }
 
 }

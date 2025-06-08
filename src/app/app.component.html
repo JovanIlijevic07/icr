@@ -38,6 +38,34 @@
 
   <router-outlet></router-outlet>
 
+  <div class="chatbot-container position-fixed bottom-0 end-0 p-3">
+    <!-- Toggle Button -->
+    <button class="btn btn-primary rounded-circle p-3" (click)="toggleChat()" *ngIf="!isChatVisible">
+      <i class="fa-solid fa-comments"></i>
+    </button>
+  
+    <!-- Chatbox -->
+    <div *ngIf="isChatVisible" class="chatbox card chatbox-content">
+      <div class="card-header d-flex justify-content-between">
+        <strong>Rasa Chat Bot</strong>
+        <button class="btn-close" aria-label="Close" (click)="toggleChat()"></button>
+      </div>
+      <div class="card-body chat-body" #chatBody>
+        <div *ngFor="let message of messages" class="message mb-2">
+          <div *ngIf="message.type === 'user'" class="text-end">
+            <div class="badge bg-primary text-white">{{ message.text }}</div>
+          </div>
+          <div *ngIf="message.type === 'bot'" class="text-start">
+            <div class="badge bg-secondary text-white msg-content" [innerHTML]="message.text"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <input type="text" class="form-control" [(ngModel)]="userMessage" (keyup.enter)="sendMessage()" placeholder="Type a message..."/>
+      </div>
+    </div>
+  </div>
+
   <footer class="text-center mt-3">
     &copy; {{ year }} interakcija čovek računar
   </footer>

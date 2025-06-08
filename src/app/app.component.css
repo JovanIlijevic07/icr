@@ -1,0 +1,46 @@
+.chatbox-content {
+    width: 350px;   /* sa 500px na 350px */
+    height: 450px;  /* sa 600px na 450px */
+    /*font-size: 14px;  dodaj manji font */
+}
+
+.chat-body {
+    overflow-y: scroll;
+    max-height: 350px;
+}
+
+.card-chat {
+    max-width: 150px;
+}
+
+@media only screen and (max-width: 800px) {
+    .chatbox-content {
+        width: 400px;
+        height: 500px;
+    }
+
+    .chat-body {
+        overflow-y: scroll;
+        max-height: 400px;
+    }
+
+    .card-chat {
+        max-width: 200px;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .chatbox-content {
+        width: 300px;
+        height: 500px;
+    }
+
+    .chat-body {
+        overflow-y: scroll;
+        max-height: 400px;
+    }
+
+    .card-chat {
+        max-width: 200px;
+    }
+}
