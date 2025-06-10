@@ -89,3 +89,63 @@ nlu:
     - are you a human?
     - am I talking to a bot?
     - am I talking to a human?
+
+
+- intent: search_pets
+  examples: |
+    - I want a [small](size) [dog](species)
+    - I want a [medium](size) [dog](species)
+    - I want a [big](size) [dog](species)
+    - I want a [small](size) [cat](species)
+    - I want a [medium](size) [cat](species)
+    - I want a [big](size) [cat](species)
+    - I want a [small](size) [bird](species)
+    - I want a [medium](size) [bird](species)
+    - I want a [big](size) [bird](species)
+    - Show me [cats](species)
+    - Show me [dog](species)
+    - Show me [dogs](species)
+    - Show me [cat](species)
+    - Show me [bird](species)
+    - Show me [birds](species)
+    - Find me a [big](size) pet
+    - Find me a [small](size) pet
+    - Find me a [medium](size) pet
+    - I'm looking for a pet from [Serbia](pet_origin)
+    - Find me a [young](age) pet
+    - Find me a [old](age) pet
+    - Find me a [1](age) pet
+    - Find me a [2](age) pet
+    - Find me a [3](age) pet
+    
+
+- intent: ask_login_status
+  examples: |
+    - Am i loged in
+    - did i login
+    - login
+    - how to login
+    - where to login?
+    - can i login
+    - can you logg me in
+
+- intent: ask_signup_status
+  examples: |
+    - Am i signed in
+    - signup
+    - how to signup
+    - where to signup?
+    - can i signup
+    - can you sign me in
+
+- intent: add_to_cart
+  examples: |
+    - Add pet [12](pet_id) to cart
+    - Please add pet [5](pet_id) to my cart
+    - I want to add pet [7](pet_id)
+    - Can you add pet [3](pet_id) to the cart
+    - Add [9](pet_id) to my basket
+    - Add to cart [5](pet_id)
+    - Add [3](pet_id)
+    - Put [7](pet_id) in cart
+    

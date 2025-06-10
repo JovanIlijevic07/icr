@@ -40,6 +40,20 @@ app.get('/api/pets', async (req, res) => {
     params.push(req.query.maxPrice);
   }
 
+  if (req.query.year_min) {
+    sql += ' AND age >= ?';
+    params.push(req.query.year_min);
+  }
+  if (req.query.year_max) {
+    sql += ' AND age <= ?';
+    params.push(req.query.year_max);
+  }
+
+  if (req.query.size) {
+    sql += ' AND size = ?';
+    params.push(req.query.size);
+  }
+
   try {
     const [results] = await pool.query(sql, params);
     res.json(results);
@@ -122,46 +136,6 @@ app.post('/api/users', async (req, res) => {
   }
 });
 
-// GET - sve recenzije
-app.get('/api/reviews', async (req, res) => {
-  try {
-    const [results] = await pool.query('SELECT * FROM reviews');
-    res.json(results);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// GET - recenzije za određenog ljubimca
-app.get('/api/reviews/pet/:petId', async (req, res) => {
-  const petId = parseInt(req.params.petId);
-  try {
-    const [results] = await pool.query('SELECT * FROM reviews WHERE pet_id = ?', [petId]);
-    res.json(results);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// POST - dodavanje recenzije
-app.post('/api/reviews', async (req, res) => {
-  const { user_id, pet_id, comment, rating } = req.body;
-
-  if (!user_id || !pet_id || !rating) {
-    return res.status(400).json({ error: 'Required fields: user_id, pet_id, rating' });
-  }
-
-  try {
-    const [result] = await pool.query(
-      'INSERT INTO reviews (user_id, pet_id, comment, rating) VALUES (?, ?, ?, ?)',
-      [user_id, pet_id, comment || null, rating]
-    );
-    res.json({ message: 'Review added successfully', id: result.insertId });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
 // POST - kreiranje porudžbina
 app.post('/api/orders', async (req, res) => {
   const { user_id, pet_ids } = req.body;
@@ -185,6 +159,22 @@ app.post('/api/orders', async (req, res) => {
   }
 });
 
+app.post('/api/cart/add', async (req, res) => {
+  const { user_id, pet_id } = req.body;
+
+  if (!user_id || !pet_id) {
+    return res.status(400).json({ error: 'user_id and pet_id are required' });
+  }
+
+  try {
+    await pool.query("INSERT INTO orders (user_id, pet_id, status) VALUES (?, ?, 'U korpi')", [user_id, pet_id]);
+    res.status(200).json({ message: 'Ljubimac dodat u korpu' });
+  } catch (err) {
+    console.error("Greška prilikom dodavanja u korpu:", err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 app.get('/api/users/:id', async (req, res) => {
   const userId = req.params.id;
   const query = 'SELECT id, name, email, phone FROM users WHERE id = ?';
@@ -205,43 +195,43 @@ app.get('/api/users/:id', async (req, res) => {
 
 app.put('/api/users/:id', (req, res) => {
   const userId = req.params.id;
-  const { name, email, phone, password, favourite_types } = req.body;
+  const { name, email, phone, password, favorite_types } = req.body;
 
-  // Validacija: obavezno ime i email npr.
   if (!name || !email) {
     return res.status(400).json({ error: 'Name and email are required' });
   }
 
-  // Za password možeš imati poseban uslov:
-  // Ako password nije prazan string, menjaj ga, inače ne diraj lozinku
-  // Takođe, za sigurnost: trebaš da heširaš lozinku pre ubacivanja (npr. bcrypt)
+  const updateUser = async (hashedPassword = null) => {
+    try {
+      let sql, params;
+
+      if (hashedPassword) {
+        sql = 'UPDATE users SET name = ?, email = ?, phone = ?, password = ?, favorite_types = ? WHERE id = ?';
+        params = [name, email, phone, hashedPassword, favorite_types, userId];
+      } else {
+        sql = 'UPDATE users SET name = ?, email = ?, phone = ?, favorite_types = ? WHERE id = ?';
+        params = [name, email, phone, favorite_types, userId];
+      }
+
+      await pool.query(sql, params);
+      res.json({ message: 'User updated successfully' });
+    } catch (err) {
+      res.status(500).json({ error: 'Database error' });
+    }
+  };
 
   if (password) {
-    const bcrypt = require('bcrypt');
-    const saltRounds = 10;
-
-    bcrypt.hash(password, saltRounds, (err, hashedPassword) => {
-      if (err) return res.status(500).json({ error: 'Hashing error' });
-
-      const sql = 'UPDATE users SET name = ?, email = ?, phone = ?, password = ?, favorite_types = ? WHERE id = ?';
-      pool.query(sql, [name, email, phone, hashedPassword, favourite_types, userId], (err, result) => {
-        if (err) return res.status(500).json({ error: 'Database error' });
-        res.json({ message: 'User updated successfully' });
-      });
-    });
+    bcrypt.hash(password, 10)
+      .then(hashedPassword => updateUser(hashedPassword))
+      .catch(() => res.status(500).json({ error: 'Hashing error' }));
   } else {
-    // Ako nema passworda, ne diraj kolonu password
-    const sql = 'UPDATE users SET name = ?, email = ?, phone = ?, favorite_types = ? WHERE id = ?';
-    pool.query(sql, [name, email, phone, favourite_types, userId], (err, result) => {
-      if (err) return res.status(500).json({ error: 'Database error' });
-      res.json({ message: 'User updated successfully' });
-    });
+    updateUser();
   }
 });
 
+// GET - porudžbine korisnika
 app.get('/api/orders/user/:userId', async (req, res) => {
   const userId = req.params.userId;
-  console.log('Tražim porudžbine za userId:', userId);
 
   const sql = `
     SELECT orders.*, pets.name AS pet_name, pets.species
@@ -258,6 +248,7 @@ app.get('/api/orders/user/:userId', async (req, res) => {
     res.status(500).json({ message: 'Greška na serveru' });
   }
 });
+
 
 
 const PORT = 3000;

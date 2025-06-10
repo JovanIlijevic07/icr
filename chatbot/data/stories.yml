@@ -1,7 +1,6 @@
 version: "3.1"
 
 stories:
-
 - story: happy path
   steps:
   - intent: greet
@@ -28,3 +27,13 @@ stories:
   - action: utter_did_that_help
   - intent: deny
   - action: utter_goodbye
+
+- story: search pets by parameters
+  steps:
+  - intent: search_pets
+  - action: action_search_pets
+
+- story: add to cart
+  steps:
+    - intent: add_to_cart
+    - action: action_add_to_cart

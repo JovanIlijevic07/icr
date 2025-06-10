@@ -3,6 +3,7 @@ import { Pet } from '../../models/pet.model';
 import { WebService } from '../web.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgFor, NgIf } from '@angular/common';
+import { CartService } from '../basket.service';
 
 @Component({
   selector: 'app-all',
@@ -19,7 +20,7 @@ export class AllComponent implements OnInit {
   origins: string[] = [];
   cart: Pet[] = [];
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder,private cartService: CartService) {
     this.webService =WebService.getInstance()
   }
 
@@ -93,16 +94,8 @@ export class AllComponent implements OnInit {
   }
 
   // Metoda za dodavanje ljubimca u korpu
-  addToCart(petId: number) {
-    const user = this.webService.getUser();
-    if (!user) {
-      alert('Morate biti ulogovani da biste dodali u korpu.');
-      return;
-    }
-
-    this.webService.submitOrder(user.id, [petId]).subscribe({
-      next: res => alert('Ljubimac je dodat u korpu!'),
-      error: err => alert('Greška prilikom dodavanja u korpu: ' + err.message)
-    });
+  addPetToCart(pet: Pet) {
+    this.cartService.addToCart(pet);
+    alert(`${pet.name} je dodat u korpu!`);
   }
 }

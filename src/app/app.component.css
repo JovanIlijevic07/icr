@@ -44,3 +44,10 @@
         max-width: 200px;
     }
 }
+.msg-content {
+    max-width: 240px; /* ograničava širinu balona */
+    word-wrap: break-word; /* prelama duge reči */
+    white-space: pre-wrap; /* čuva nove redove i prelama automatski */
+    padding: 6px 10px;
+    display: inline-block;
+}

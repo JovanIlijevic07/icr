@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { MessageModel } from '../models/message.model';
 import { RasaModel } from '../models/rasa.model';
 import { WebService } from './web.service';
+import { CartService } from './basket.service';
 
 @Component({
   selector: 'app-root',
@@ -32,7 +33,7 @@ export class AppComponent implements OnInit{
 
  public authService: AuthService
 
-  constructor( private router: Router) {
+  constructor( private router: Router,private cartService:CartService) {
     this.authService =AuthService.getInstance()
   }
 
@@ -95,74 +96,94 @@ export class AppComponent implements OnInit{
 
    
   sendMessage() {
-    // wating for response, user can't send new messages
-    if (this.waitingForResponse) return
+  if (this.waitingForResponse) return;
 
-    if (this.userMessage.trim()) {
-      const trimmedInput = this.userMessage;
-      // Reset user input
-      this.userMessage = '';
+  if (this.userMessage.trim()) {
+    const trimmedInput = this.userMessage;
+    this.userMessage = '';
 
-      this.pushMessage({ type: 'user', text: trimmedInput });
-      this.pushMessage({ type: 'bot', text: this.botThinkingPlaceholder })
-      this.webService.sendRasaMessage(trimmedInput)
-        .subscribe((rsp: RasaModel[]) => {
-          console.log('Rasa response:', rsp);
-          if (rsp.length == 0) {
-            this.pushMessage({
-              type: 'bot',
-              text: 'Sorry I did not understand your question.'
-            });
-            return;
-          }
+    this.pushMessage({ type: 'user', text: trimmedInput });
+    this.pushMessage({ type: 'bot', text: this.botThinkingPlaceholder });
 
-          rsp.map(msg => {
-            // Handle bot message (including images, flight cards, etc.)
-            if (msg.image) {
-              return `<img src="${msg.image}" width="200">`;
-            }
-            if (msg.attachment) {
-              let html = '';
-              //promeni imena funkcija da prikazuje slike tvojih zivotinja
-              for (const item of msg.attachment) {
-                html += `
-                  <div class="card card-chat">
-                
-                    <img src="${this.webService.getPetImg(item)}" class="card-img-top" alt="${item.name}">
-                    <div class="card-body">
-                      <h3 class="card-title">${item.name}</h3>
-                       <p class="card-text">Cena: ${item.price} RSD</p>
-                    </div>
-                    <div class="card-body">
-                      <a class="btn btn-primary" href="/pet/${item.id}">
-                        <i class="fa-solid fa-up-right-from-square"></i> Details
-                      </a>
-                      <a class="btn btn-success ms-1" href="/all">
-                        <i class="fa-solid fa-magnifying-glass"></i> Browse All
-                      </a>
-                    </div>
-                  </div>
-                `;
-              }
-              return html;
-            }
-            return msg.text;
-          })
-            .forEach(msg => {
-              this.pushMessage({
-                type: 'bot',
-                text: msg!
-              });
-            });
-        },
-          (err: HttpErrorResponse) => {
-             console.log('Rasa error:', err);
-            this.pushMessage({
-              type: 'bot',
-              text: 'Sorry, I am not available at the moment.'
-            });
+    this.webService.sendRasaMessage(trimmedInput).subscribe(
+      (rsp: RasaModel[]) => {
+        console.log('Rasa response:', rsp);
+
+        if (rsp.length === 0) {
+          this.pushMessage({
+            type: 'bot',
+            text: 'Sorry I did not understand your question.'
           });
-    }
+          return;
+        }
+
+        rsp.map(msg => {
+          if (msg.image) {
+            return `<img src="${msg.image}" width="200">`;
+          }
+          if (msg.attachment) {
+            let html = '';
+            for (const item of msg.attachment) {
+              html += `
+                <div class="card card-chat">
+                  <img src="${this.webService.getPetImg(item)}" class="card-img-top" alt="${item.name}">
+                  <div class="card-body">
+                    <h3 class="card-title">${item.name}</h3>
+                    <p class="card-text">Cena: ${item.price} RSD</p>
+                  </div>
+                  <div class="card-body">
+                    <a class="btn btn-primary" href="/pet/${item.id}">
+                      <i class="fa-solid fa-up-right-from-square"></i> Details
+                    </a>
+                    <a class="btn btn-success ms-1" href="/all">
+                      <i class="fa-solid fa-magnifying-glass"></i> Browse All
+                    </a>
+                  </div>
+                </div>
+              `;
+            }
+            return html;
+          }
+          return msg.text;
+        }).forEach(msg => {
+          this.pushMessage({
+            type: 'bot',
+            text: msg!
+          });
+        });
+
+        // 🔍 Dodatak: detekcija poruke sa ID-jem i dodavanje ljubimca u korpu
+        rsp.forEach(msg => {
+          if (msg.text) {
+            const regex = /Ljubimac sa ID (\d+) je dodat u tvoju korpu\./;
+            const match = msg.text.match(regex);
+
+            if (match) {
+              const petId = parseInt(match[1]);
+              console.log('Prepoznat ID iz poruke:', petId);
+
+              this.webService.getPetById(petId).subscribe(pet => {
+                if (pet) {
+                  this.cartService.addToCart(pet);
+                  console.log(`Ljubimac sa ID ${petId} dodat u CartService.`);
+                } else {
+                  console.warn(`Ljubimac sa ID ${petId} nije pronađen.`);
+                }
+              });
+            }
+          }
+        });
+      },
+      (err: HttpErrorResponse) => {
+        console.log('Rasa error:', err);
+        this.pushMessage({
+          type: 'bot',
+          text: 'Sorry, I am not available at the moment.'
+        });
+      }
+    );
   }
+}
+
 }
 

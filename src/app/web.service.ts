@@ -105,7 +105,8 @@ getUser() {
   }
 
   submitOrder(userId: number, petIds: number[]): Observable<any> {
-    return this.client.post(`${this.baseUrl}/orders`, {
+    console.log("📦 Šaljem u korpu:", { user_id: userId, pet_id: petIds });
+    return this.client.post(`${this.baseUrl}/cart/add`, {
       user_id: userId,
       pet_ids: petIds
     });
@@ -137,19 +138,37 @@ checkEmailExists(email: string) {
   }
 
   public sendRasaMessage(value: string) {
-    const url = 'http://localhost:5005/webhooks/rest/webhook'
-    return this.client.post<RasaModel[]>(url,
-      {
-        sender: this.retrieveRasaSession(),
-        email: localStorage.getItem('active') ? localStorage.getItem('active') : null,
-        message: value
-      },
-      {
-        headers: {
-          'Accept': 'application/json'
-        }
+  const url = 'http://localhost:5005/webhooks/rest/webhook';
+
+  const isLoggedIn = this.isLoggedIn();
+  const user = this.getUser();
+
+  const sender = isLoggedIn && user?.id ? user.id.toString() : this.retrieveRasaSession();
+
+  return this.client.post<RasaModel[]>(
+    url,
+    {
+      sender: sender,
+      message: value,
+      metadata: {
+        is_logged_in: isLoggedIn,
+        user_email: user?.email || null,
+        user_id: user?.id || null
       }
-    )
-  }
+    },
+    {
+      headers: {
+        'Accept': 'application/json'
+      }
+    }
+  );
+}
+
+addToCart(userId: number, petId: number): Observable<any> {
+  return this.client.post(`${this.baseUrl}/cart/add`, {
+    user_id: userId,
+    pet_id: petId
+  });
+}
 
 }

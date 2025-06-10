@@ -16,6 +16,7 @@ export class BasektComponent {
   public webService:WebService
   cartPets: Pet[] = []
   public totalPrice: number=0;
+  isLoggedIn: boolean = false;
 
   constructor(private cartService: CartService) {
     this.webService = WebService.getInstance()
@@ -24,6 +25,7 @@ export class BasektComponent {
   ngOnInit() {
     this.cartPets = this.cartService.getCart();
     this.totalPrice=this.cartPets.reduce((sum,pet)=>sum+Number(pet.price),0);
+    this.isLoggedIn = !!localStorage.getItem('token');
   }
   submitOrder() {
   const petIds = this.cartPets.map(p => p.id);

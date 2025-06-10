@@ -1,13 +1,27 @@
 version: "3.1"
 
 rules:
+- rule: greet and respond
+  steps:
+  - intent: greet
+  - action: utter_greet
 
-- rule: Say goodbye anytime the user says goodbye
+- rule: goodbye and respond
   steps:
   - intent: goodbye
   - action: utter_goodbye
 
-- rule: Say 'I am a bot' anytime the user challenges
+- rule: search pets on search_pets intent
   steps:
-  - intent: bot_challenge
-  - action: utter_iamabot
+  - intent: search_pets
+  - action: action_search_pets
+
+- rule: Answer on question about loggin
+  steps:
+  - intent: ask_login_status
+  - action: utter_ask_login_status
+
+- rule: Answer the question about login status
+  steps:
+  - intent: ask_login_status
+  - action: utter_ask_login_status

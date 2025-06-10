@@ -8,14 +8,55 @@ intents:
   - mood_great
   - mood_unhappy
   - bot_challenge
+  - search_pets
+  - ask_login_status
+  - ask_signup_status
+  - add_to_cart
+  
+
+entities:
+  - size
+  - species
+  - age
+  - origin
+  - pet_id
+
+slots:
+  size:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: size
+  species:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: species
+  age:
+    type: text
+    influence_conversation: false
+    mappings: 
+      - type: from_entity
+        entity: age
+  origin:
+    type: text
+    influence_conversation: false
+    mappings: 
+      - type: from_entity
+        entity: origin
+  pet_id:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: pet_id
 
 responses:
-  utter_greet:
-  - text: "Hey! How are you?"
-
   utter_cheer_up:
   - text: "Here is something to cheer you up:"
-    image: "https://i.imgur.com/nGF1K8f.jpg"
+    image: "https://img.pequla.com/destination/zagreb.jpg"
 
   utter_did_that_help:
   - text: "Did that help you?"
@@ -23,11 +64,26 @@ responses:
   utter_happy:
   - text: "Great, carry on!"
 
-  utter_goodbye:
-  - text: "Bye"
-
   utter_iamabot:
   - text: "I am a bot, powered by Rasa."
+  utter_greet:
+  - text: "Hello! I'm PetBuddy, your personal pet store assistant. How can I help you today?"
+
+  utter_goodbye:
+  - text: "Goodbye! Hope to see you again soon."
+   
+  utter_ask_login_status:
+  - text: "Nisi prijavljen. Možeš se prijaviti ovde: http://localhost:4200/login"
+  
+  utter_ask_signup_status:
+  - text: "Nisi prijavljen. Možeš se prijaviti ovde: http://localhost:4200/signup"
+
+  utter_ask_search_criteria:
+  - text: "Tell me what kind of pet you're looking for. You can specify type, size, age, or origin."
+
+actions:
+  - action_search_pets
+  - action_add_to_cart
 
 session_config:
   session_expiration_time: 60
