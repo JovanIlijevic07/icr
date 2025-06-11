@@ -8,13 +8,13 @@ import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-signup',
-  imports: [CommonModule, FormsModule, NgIf,HttpClientModule],
+  imports: [CommonModule, FormsModule, NgIf, HttpClientModule],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'
 })
 export class SignupComponent {
 
-   user = {
+  user = {
     name: '',
     email: '',
     password: '',
@@ -42,7 +42,7 @@ export class SignupComponent {
   }
 
   signup() {
-    // Validacija telefona (primer)
+
     const phonePattern = /^06[0-9]\/[0-9]{6,7}$/;
     if (!phonePattern.test(this.user.phone)) {
       this.errorMessage = 'Telefon mora biti u formatu 06x/xxxxxxx';

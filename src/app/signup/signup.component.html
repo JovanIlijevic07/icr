@@ -6,20 +6,12 @@
           <h2 class="card-title text-center mb-4">Registracija</h2>
 
           <form (ngSubmit)="signup()" #signupForm="ngForm" novalidate>
-            
+
             <!-- Ime -->
             <div class="mb-3">
               <label for="name" class="form-label">Ime</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                class="form-control"
-                [(ngModel)]="user.name"
-                required
-                minlength="2"
-                #nameField="ngModel"
-              />
+              <input type="text" id="name" name="name" class="form-control" [(ngModel)]="user.name" required
+                minlength="2" #nameField="ngModel" />
               <div *ngIf="nameField.invalid && nameField.touched" class="text-danger small">
                 Unesite validno ime (najmanje 2 karaktera).
               </div>
@@ -28,16 +20,8 @@
             <!-- Email -->
             <div class="mb-3">
               <label for="email" class="form-label">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                class="form-control"
-                [(ngModel)]="user.email"
-                required
-                email
-                #emailField="ngModel"
-              />
+              <input type="email" id="email" name="email" class="form-control" [(ngModel)]="user.email" required email
+                #emailField="ngModel" />
               <div *ngIf="emailField.invalid && emailField.touched" class="text-danger small">
                 Unesite validan email.
               </div>
@@ -46,16 +30,8 @@
             <!-- Lozinka -->
             <div class="mb-3">
               <label for="password" class="form-label">Lozinka</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                class="form-control"
-                [(ngModel)]="user.password"
-                required
-                minlength="6"
-                #passwordField="ngModel"
-              />
+              <input type="password" id="password" name="password" class="form-control" [(ngModel)]="user.password"
+                required minlength="6" #passwordField="ngModel" />
               <div *ngIf="passwordField.invalid && passwordField.touched" class="text-danger small">
                 Lozinka mora imati najmanje 6 karaktera.
               </div>
@@ -64,16 +40,8 @@
             <!-- Telefon -->
             <div class="mb-3">
               <label for="phone" class="form-label">Telefon</label>
-              <input
-                type="text"
-                id="phone"
-                name="phone"
-                class="form-control"
-                [(ngModel)]="user.phone"
-                required
-                pattern="^06[0-9]\/[0-9]{6,7}$"
-                #phoneField="ngModel"
-              />
+              <input type="text" id="phone" name="phone" class="form-control" [(ngModel)]="user.phone" required
+                pattern="^06[0-9]\/[0-9]{6,7}$" #phoneField="ngModel" />
               <div *ngIf="phoneField.invalid && phoneField.touched" class="text-danger small">
                 Telefon mora biti u formatu 06x/xxxxxxx.
               </div>
@@ -82,15 +50,8 @@
             <!-- Adresa -->
             <div class="mb-3">
               <label for="address" class="form-label">Adresa</label>
-              <input
-                type="text"
-                id="address"
-                name="address"
-                class="form-control"
-                [(ngModel)]="user.address"
-                required
-                #addressField="ngModel"
-              />
+              <input type="text" id="address" name="address" class="form-control" [(ngModel)]="user.address" required
+                #addressField="ngModel" />
               <div *ngIf="addressField.invalid && addressField.touched" class="text-danger small">
                 Unesite adresu.
               </div>
@@ -100,13 +61,8 @@
             <div class="mb-3">
               <label class="form-label">Omiljene vrste ljubimaca</label>
               <div class="form-check" *ngFor="let type of ['pas', 'mačka', 'ptica']">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  (change)="toggleType(type)"
-                  [checked]="selectedTypes.includes(type)"
-                  id="{{ type }}"
-                />
+                <input class="form-check-input" type="checkbox" (change)="toggleType(type)"
+                  [checked]="selectedTypes.includes(type)" id="{{ type }}" />
                 <label class="form-check-label" [for]="type">
                   {{ type }}
                 </label>
@@ -119,11 +75,7 @@
             </div>
 
             <!-- Dugme za registraciju -->
-            <button
-              type="submit"
-              class="btn btn-primary w-100"
-              [disabled]="signupForm.invalid"
-            >
+            <button type="submit" class="btn btn-primary w-100" [disabled]="signupForm.invalid">
               Registruj se
             </button>
           </form>

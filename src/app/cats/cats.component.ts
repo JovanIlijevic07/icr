@@ -8,25 +8,25 @@ import { CartService } from '../basket.service';
 
 @Component({
   selector: 'app-cats',
-  imports: [HttpClientModule,RouterLink,NgIf,NgFor],
+  imports: [HttpClientModule, RouterLink, NgIf, NgFor],
   templateUrl: './cats.component.html',
   styleUrl: './cats.component.css'
 })
-export class CatsComponent implements OnInit{
+export class CatsComponent implements OnInit {
 
-public webService:WebService
+  public webService: WebService
   public cats: Pet[] = [];
-  loggedIn:boolean = false
+  loggedIn: boolean = false
 
- constructor(private cartService: CartService) {
-      this.webService =WebService.getInstance()
+  constructor(private cartService: CartService) {
+    this.webService = WebService.getInstance()
   }
 
   ngOnInit(): void {
-    // Proveri da li je korisnik loginovan
+
     this.loggedIn = this.webService.isLoggedIn();
 
-    // Učitaj pse
+
     this.webService.getAllPets().subscribe((pets: Pet[]) => {
       this.cats = pets.filter(pet => pet.species?.toLowerCase().trim() === 'mačka');
     });

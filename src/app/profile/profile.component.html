@@ -13,16 +13,10 @@
     </div>
 
     <div class="mb-3">
-  <label for="password" class="form-label">Lozinka (ostavi prazno ako ne menjaš)</label>
-  <input
-    type="password"
-    id="password"
-    class="form-control"
-    [(ngModel)]="updatedUser.password"
-    name="password"
-    minlength="6"
-  >
-</div>
+      <label for="password" class="form-label">Lozinka (ostavi prazno ako ne menjaš)</label>
+      <input type="password" id="password" class="form-control" [(ngModel)]="updatedUser.password" name="password"
+        minlength="6">
+    </div>
 
     <div class="mb-3">
       <label for="phone" class="form-label">Telefon</label>
@@ -32,13 +26,8 @@
     <div class="mb-3">
       <label class="form-label">Omiljene životinje</label>
       <div *ngFor="let option of favouriteOptions" class="form-check">
-        <input
-          type="checkbox"
-          class="form-check-input"
-          [id]="option"
-          [checked]="getFavouriteArray().includes(option)"
-          (change)="onFavouriteChange($event, option)"
-        >
+        <input type="checkbox" class="form-check-input" [id]="option" [checked]="getFavouriteArray().includes(option)"
+          (change)="onFavouriteChange($event, option)">
         <label class="form-check-label" [for]="option">{{ option }}</label>
       </div>
     </div>

@@ -1,24 +1,23 @@
 import { Component } from '@angular/core';
-import { NgForm,FormsModule} from '@angular/forms';
-import { RouterLink,Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { RouterLink, Router } from '@angular/router';
 import { CommonModule, NgIf } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { SafePipe } from '../safe.pipe';
 import { WebService } from '../web.service';
 
 @Component({
   selector: 'app-login',
-  imports: [RouterLink,CommonModule,FormsModule,NgIf,HttpClientModule,SafePipe],
+  imports: [RouterLink, CommonModule, FormsModule, NgIf, HttpClientModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
- email: string = '';
+  email: string = '';
   password: string = '';
   errorMessage: string = '';
   public webService: WebService
 
-  constructor( private router: Router) {
+  constructor(private router: Router) {
     this.webService = WebService.getInstance()
   }
 
@@ -29,7 +28,7 @@ export class LoginComponent {
       next: (res) => {
         console.log('Uspešan login:', res);
         // Posle uspešnog logina, idi na početnu ili profil stranu
-        this.router.navigate(['/profile']); 
+        this.router.navigate(['/profile']);
       },
       error: (err) => {
         if (err.status === 400 || err.status === 401) {

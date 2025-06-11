@@ -67,7 +67,7 @@ responses:
   utter_iamabot:
   - text: "I am a bot, powered by Rasa."
   utter_greet:
-  - text: "Hello! I'm PetBuddy, your personal pet store assistant. How can I help you today?"
+  - text: "Hello! I'm Pawsy, your personal pet store assistant. How can I help you today?"
 
   utter_goodbye:
   - text: "Goodbye! Hope to see you again soon."

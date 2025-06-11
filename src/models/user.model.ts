@@ -4,7 +4,7 @@ export interface User {
   email: string;
   password: string;
   phone: string;
-  adress: string[];  
+  adress: string[];
   favourite_types: string;
-  
+
 }

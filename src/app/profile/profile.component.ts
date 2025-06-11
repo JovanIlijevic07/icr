@@ -7,7 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-profile',
-  imports: [NgIf,FormsModule,NgFor,HttpClientModule],
+  imports: [NgIf, FormsModule, NgFor, HttpClientModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
@@ -19,7 +19,7 @@ export class ProfileComponent implements OnInit {
 
   favouriteOptions = ['pas', 'mačka', 'ptica'];  // Opcije omiljenih životinja
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit(): void {
     const localUser = WebService.getInstance().getUser();
@@ -57,7 +57,7 @@ export class ProfileComponent implements OnInit {
   }
 
   saveChanges() {
-    // Ako je lozinka prazna, ne šalji je u update da se ne menja
+
     if (this.updatedUser.password === '') {
       delete this.updatedUser.password;
     }
@@ -86,7 +86,7 @@ export class ProfileComponent implements OnInit {
         this.error = '';
         this.user = { ...this.user, ...this.updatedUser };
         localStorage.setItem('user', JSON.stringify(this.user));
-        // Očisti lozinku iz updatedUser radi sigurnosti
+
         if (this.updatedUser.password) {
           delete this.updatedUser.password;
         }

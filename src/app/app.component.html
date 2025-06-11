@@ -10,8 +10,8 @@
           <li class="nav-item"><a class="nav-link" routerLink="/cats">Mačke</a></li>
           <li class="nav-item"><a class="nav-link" routerLink="/birds">Ptice</a></li>
           <li class="nav-item"><a class="nav-link" routerLink="/all">Ljubimci</a></li>
-          <li *ngIf="authService.isLoggedIn()"><a class="nav-link" routerLink="/orders">Porudzbine</a></li>
-          
+          <li *ngIf="webService.isLoggedIn()"><a class="nav-link" routerLink="/orders">Porudzbine</a></li>
+
         </ul>
 
         <div class="d-flex ms-auto align-items-center">
@@ -20,17 +20,17 @@
             <li class="nav-item">
               <a class="btn btn-outline-primary me-2" [routerLink]="profileOrLoginLink">
                 <i class="fa-solid fa-user"></i>
-                {{ authService.isLoggedIn() ? 'Profil' : 'Prijava' }}
+                {{ webService.isLoggedIn() ? 'Profil' : 'Prijava' }}
               </a>
             </li>
-            <li *ngIf="authService.isLoggedIn()" class="nav-item">
+            <li *ngIf="webService.isLoggedIn()" class="nav-item">
               <button class="btn btn-outline-danger" (click)="logout()">
                 <i class="fa-solid fa-right-from-bracket"></i> Odjava
               </button>
             </li>
             <li class="nav-item">
-               <a routerLink="/basket" class="btn btn-primary me-2">
-                  Korpa
+              <a routerLink="/basket" class="btn btn-primary me-2">
+                Korpa
               </a>
             </li>
           </ul>
@@ -46,11 +46,11 @@
     <button class="btn btn-primary rounded-circle p-3" (click)="toggleChat()" *ngIf="!isChatVisible">
       <i class="fa-solid fa-comments"></i>
     </button>
-  
+
     <!-- Chatbox -->
     <div *ngIf="isChatVisible" class="chatbox card chatbox-content">
       <div class="card-header d-flex justify-content-between">
-        <strong>Rasa Chat Bot</strong>
+        <strong>Pawsy</strong>
         <button class="btn-close" aria-label="Close" (click)="toggleChat()"></button>
       </div>
       <div class="card-body chat-body" #chatBody>
@@ -64,7 +64,8 @@
         </div>
       </div>
       <div class="card-footer">
-        <input type="text" class="form-control" [(ngModel)]="userMessage" (keyup.enter)="sendMessage()" placeholder="Type a message..."/>
+        <input type="text" class="form-control" [(ngModel)]="userMessage" (keyup.enter)="sendMessage()"
+          placeholder="Type a message..." />
       </div>
     </div>
   </div>

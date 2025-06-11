@@ -1,13 +1,11 @@
-
 <div *ngIf="cats">
 
   <div *ngFor="let cat of cats">
 
-    <div class="card mb-3" >
+    <div class="card mb-3">
       <div class="row g-0">
         <div class="col-md-4">
-          <img [src]="webService.getPetImg(cat)" class="img-fluid rounded-start"
-            [alt]="cat.name">
+          <img [src]="webService.getPetImg(cat)" class="img-fluid rounded-start" [alt]="cat.name">
         </div>
         <div class="col-md-8 ">
           <div class="card-body ">
@@ -24,8 +22,8 @@
                 Vidi više
               </a>
               <button *ngIf="loggedIn" class="btn btn-success mr-2" (click)="addToCart(cat)">
-  Dodaj u korpu
-</button>
+                Dodaj u korpu
+              </button>
             </div>
           </div>
         </div>

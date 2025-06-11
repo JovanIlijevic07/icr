@@ -4,16 +4,8 @@
   <form (ngSubmit)="login()" #loginForm="ngForm" novalidate>
     <div class="mb-3">
       <label for="email" class="form-label">Email:</label>
-      <input
-        type="email"
-        id="email"
-        name="email"
-        [(ngModel)]="email"
-        required
-        email
-        #emailModel="ngModel"
-        class="form-control"
-      />
+      <input type="email" id="email" name="email" [(ngModel)]="email" required email #emailModel="ngModel"
+        class="form-control" />
       <div *ngIf="emailModel.invalid && emailModel.touched" class="text-danger">
         Unesite validan email.
       </div>
@@ -21,16 +13,8 @@
 
     <div class="mb-3">
       <label for="password" class="form-label">Lozinka:</label>
-      <input
-        type="password"
-        id="password"
-        name="password"
-        [(ngModel)]="password"
-        required
-        minlength="6"
-        #passwordModel="ngModel"
-        class="form-control"
-      />
+      <input type="password" id="password" name="password" [(ngModel)]="password" required minlength="6"
+        #passwordModel="ngModel" class="form-control" />
       <div *ngIf="passwordModel.invalid && passwordModel.touched" class="text-danger">
         Lozinka mora imati najmanje 6 karaktera.
       </div>
@@ -44,10 +28,10 @@
       Prijavi se
     </button>
 
-    
 
-  <a routerLink="/signup" class="btn btn-outline-secondary">Registruj se</a>
 
-    
+    <a routerLink="/signup" class="btn btn-outline-secondary">Registruj se</a>
+
+
   </form>
 </div>

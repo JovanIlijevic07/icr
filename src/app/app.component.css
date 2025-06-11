@@ -1,6 +1,8 @@
 .chatbox-content {
-    width: 350px;   /* sa 500px na 350px */
-    height: 450px;  /* sa 600px na 450px */
+    width: 350px;
+    /* sa 500px na 350px */
+    height: 450px;
+    /* sa 600px na 450px */
     /*font-size: 14px;  dodaj manji font */
 }
 
@@ -44,10 +46,14 @@
         max-width: 200px;
     }
 }
+
 .msg-content {
-    max-width: 240px; /* ograničava širinu balona */
-    word-wrap: break-word; /* prelama duge reči */
-    white-space: pre-wrap; /* čuva nove redove i prelama automatski */
+    max-width: 240px;
+    /* ograničava širinu balona */
+    word-wrap: break-word;
+    /* prelama duge reči */
+    white-space: pre-wrap;
+    /* čuva nove redove i prelama automatski */
     padding: 6px 10px;
     display: inline-block;
 }

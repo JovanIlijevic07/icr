@@ -55,7 +55,7 @@
       </form>
     </div>
 
-     <!-- DESNA STRANA: Prikaz ljubimaca -->
+    <!-- DESNA STRANA: Prikaz ljubimaca -->
     <div class="col-md-8">
       <h5>Pronađeni ljubimci</h5>
       <div class="row">
@@ -72,14 +72,11 @@
                 Cena: {{ pet.price }} RSD
               </p>
             </div>
-           <div class="card-footer text-end">
-  <button 
-    *ngIf="isLoggedIn()" 
-    class="btn btn-sm btn-success" 
-    (click)="addPetToCart(pet)">
-    Dodaj u korpu
-  </button>
-</div>
+            <div class="card-footer text-end">
+              <button *ngIf="isLoggedIn()" class="btn btn-sm btn-success" (click)="addPetToCart(pet)">
+                Dodaj u korpu
+              </button>
+            </div>
           </div>
         </div>
       </div>

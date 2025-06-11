@@ -1,14 +1,13 @@
 import { CommonModule, NgFor, NgIf } from '@angular/common';
-import {HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { SafePipe } from '../safe.pipe';
 import { RouterLink } from '@angular/router';
 import { WebService } from '../web.service';
 import { Pet } from '../../models/pet.model';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, NgIf, HttpClientModule, NgFor, CommonModule, SafePipe],
+  imports: [RouterLink, NgIf, HttpClientModule, NgFor, CommonModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -24,10 +23,10 @@ export class HomeComponent implements OnInit {
   ];
 
   public advertizments = [
-    { img: 'assets/reklame/slika.jpg', title: 'BESPLATNA ISPORUKA',description:'za kupovine veće od 4.000 RSD' },
-    { img: 'assets/reklame/reklama2.jpg', title: 'LOYALTY PROGRAM',description:'dodatna ušteda za redovne kupce' },
-    { img: 'assets/reklame/reklama3.jpg', title: 'POPUSTI I AKCIJE',description:'svake nedelje bolje cene' },
-    { img: 'assets/reklame/reklama4.jpg', title: 'STRUČNA PODRŠKA',description:'u roku od 24h' },
+    { img: 'assets/reklame/slika.jpg', title: 'BESPLATNA ISPORUKA', description: 'za kupovine veće od 4.000 RSD' },
+    { img: 'assets/reklame/reklama2.jpg', title: 'LOYALTY PROGRAM', description: 'dodatna ušteda za redovne kupce' },
+    { img: 'assets/reklame/reklama3.jpg', title: 'POPUSTI I AKCIJE', description: 'svake nedelje bolje cene' },
+    { img: 'assets/reklame/reklama4.jpg', title: 'STRUČNA PODRŠKA', description: 'u roku od 24h' },
 
   ];
 

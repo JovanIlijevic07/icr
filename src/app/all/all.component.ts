@@ -7,35 +7,35 @@ import { CartService } from '../basket.service';
 
 @Component({
   selector: 'app-all',
-  imports: [FormsModule,ReactiveFormsModule,NgFor,NgIf],
+  imports: [FormsModule, ReactiveFormsModule, NgFor, NgIf],
   templateUrl: './all.component.html',
   styleUrl: './all.component.css'
 })
 export class AllComponent implements OnInit {
- 
- public webService: WebService
+
+  public webService: WebService
   pets: Pet[] = [];
   filteredPets: Pet[] = [];
   filterForm!: FormGroup;
   origins: string[] = [];
   cart: Pet[] = [];
 
-  constructor(private fb: FormBuilder,private cartService: CartService) {
-    this.webService =WebService.getInstance()
+  constructor(private fb: FormBuilder, private cartService: CartService) {
+    this.webService = WebService.getInstance()
   }
 
-  
-    loadPets(): void {
-      this.webService.getPets().subscribe(data => {
-        this.pets = data;
-        this.filteredPets = data;
-  
-        // Dinamičko punjenje unikatnih porekla
-        const originsSet = new Set<string>();
-        this.pets.forEach(pet => originsSet.add(pet.origin));
-        this.origins = Array.from(originsSet);
-      });
-    }
+
+  loadPets(): void {
+    this.webService.getPets().subscribe(data => {
+      this.pets = data;
+      this.filteredPets = data;
+
+      // Dinamičko punjenje unikatnih porekla
+      const originsSet = new Set<string>();
+      this.pets.forEach(pet => originsSet.add(pet.origin));
+      this.origins = Array.from(originsSet);
+    });
+  }
 
   ngOnInit(): void {
     this.filterForm = this.fb.group({
@@ -52,10 +52,10 @@ export class AllComponent implements OnInit {
   }
 
   loadOrigins(): void {
-  this.webService.getOrigins().subscribe(data => {
-    this.origins = data;
-  });
-}
+    this.webService.getOrigins().subscribe(data => {
+      this.origins = data;
+    });
+  }
 
 
   applyFilters(): void {

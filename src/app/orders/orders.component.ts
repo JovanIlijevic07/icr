@@ -7,7 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-orders',
-  imports: [NgIf,FormsModule,NgFor,CommonModule,HttpClientModule,FormsModule],
+  imports: [NgIf, FormsModule, NgFor, CommonModule, HttpClientModule, FormsModule],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.css'
 })
@@ -15,118 +15,118 @@ export class OrdersComponent implements OnInit {
   orders: Order[] = [];
   message = '';
   error = '';
-  public webService:WebService
-  
-  // Za čuvanje privremenih recenzija korisnika (komentari i rating po narudžbini)
+  public webService: WebService
+
+
   reviewTexts: { [orderId: number]: string } = {};
   reviewRatings: { [orderId: number]: number } = {};
-  
+
   constructor() {
     this.webService = WebService.getInstance()
   }
 
-  
+
   ngOnInit(): void {
-  const userId = this.webService.getUserID();
-  if (!userId) {
-    this.error = 'Niste ulogovani.';
-    return;
-  }
-
-  // 1. Prvo automatski ažuriraj statuse porudžbina
-  this.webService.updateOrderStatuses(userId).subscribe({
-    next: () => {
-      // 2. Nakon uspešnog ažuriranja, učitaj porudžbine
-      this.loadOrders();
-    },
-    error: () => {
-      this.error = 'Greška pri ažuriranju statusa porudžbina.';
+    const userId = this.webService.getUserID();
+    if (!userId) {
+      this.error = 'Niste ulogovani.';
+      return;
     }
-  });
-}
 
-onRatingChange(orderId: number, rating: number) {
-  this.reviewRatings[orderId] = rating;
-}
 
- loadOrders(): void {
-  const user = this.webService.getUser();
-  if (!user) {
-    this.error = 'Niste ulogovani.';
-    return;
+    this.webService.updateOrderStatuses(userId).subscribe({
+      next: () => {
+
+        this.loadOrders();
+      },
+      error: () => {
+        this.error = 'Greška pri ažuriranju statusa porudžbina.';
+      }
+    });
   }
-  this.webService.getOrdersByUser(user.id).subscribe({
-    next: (ordersFromServer: any[]) => {
-      const groupedOrdersMap = new Map<number, Order>();
 
-      ordersFromServer.forEach(o => {
-        let order = groupedOrdersMap.get(o.order_id);
-        if (!order) {
-          order = {
-            id: o.order_id,
-            user_id: user.id,               // dodeljujemo user_id
-            status: o.status,
-            created_at: o.created_at,
-            rating: o.rating || 0,          // ako postoji rating u objektu, ili 0
-            pets: []
-          };
-          groupedOrdersMap.set(o.order_id, order);
-        }
-        order.pets.push({
-          id: o.pet_id,
-          name: o.pet_name,
-          species: o.species,
-          age: o.age,
-          size: o.size,
-          origin: o.origin,
-          description: o.description,
-          image_url: o.image_url,
-          price: o.price
+  onRatingChange(orderId: number, rating: number) {
+    this.reviewRatings[orderId] = rating;
+  }
+
+  loadOrders(): void {
+    const user = this.webService.getUser();
+    if (!user) {
+      this.error = 'Niste ulogovani.';
+      return;
+    }
+    this.webService.getOrdersByUser(user.id).subscribe({
+      next: (ordersFromServer: any[]) => {
+        const groupedOrdersMap = new Map<number, Order>();
+
+        ordersFromServer.forEach(o => {
+          let order = groupedOrdersMap.get(o.order_id);
+          if (!order) {
+            order = {
+              id: o.order_id,
+              user_id: user.id,               // dodeljujemo user_id
+              status: o.status,
+              created_at: o.created_at,
+              rating: o.rating || 0,          // ako postoji rating u objektu, ili 0
+              pets: []
+            };
+            groupedOrdersMap.set(o.order_id, order);
+          }
+          order.pets.push({
+            id: o.pet_id,
+            name: o.pet_name,
+            species: o.species,
+            age: o.age,
+            size: o.size,
+            origin: o.origin,
+            description: o.description,
+            image_url: o.image_url,
+            price: o.price
+          });
         });
-      });
 
-      this.orders = Array.from(groupedOrdersMap.values());
+        this.orders = Array.from(groupedOrdersMap.values());
 
-      this.orders.forEach(order => {
-        this.reviewTexts[order.id] = '';
-        this.reviewRatings[order.id] = order.rating || 0;
-      });
-    },
-    error: () => {
-      this.error = 'Greška pri učitavanju narudžbina.';
-    }
-  });
-}
+        this.orders.forEach(order => {
+          this.reviewTexts[order.id] = '';
+          this.reviewRatings[order.id] = order.rating || 0;
+        });
+      },
+      error: () => {
+        this.error = 'Greška pri učitavanju narudžbina.';
+      }
+    });
+  }
 
-cancelOrder(order: Order): void {
-  this.error = '';
-  this.message = '';
+  cancelOrder(order: Order): void {
+    this.error = '';
+    this.message = '';
 
-  this.webService.changeOrderStatus(order.id, 'otkazano').subscribe({
-    next: () => {
-      order.status = 'otkazano';  // ažuriraj lokalno stanje
-      this.message = `Narudžbina #${order.id} je uspešno otkazana.`;
-    },
-    error: () => {
-      this.error = `Greška prilikom otkazivanja narudžbine #${order.id}.`;
-    }
-  });
-}
+    this.webService.changeOrderStatus(order.id, 'otkazano').subscribe({
+      next: () => {
+        order.status = 'otkazano';
+        this.message = `Narudžbina #${order.id} je uspešno otkazana.`;
+      },
+      error: () => {
+        this.error = `Greška prilikom otkazivanja narudžbine #${order.id}.`;
+      }
+    });
+  }
 
-reserveOrder(order: Order): void {
-  this.error = '';
-  this.message = '';
+  reserveOrder(order: Order): void {
+    this.error = '';
+    this.message = '';
 
-  this.webService.changeOrderStatus(order.id, 'rezervisano').subscribe({
-    next: () => {
-      order.status = 'rezervisano';  // ažuriraj lokalno stanje
-      this.message = `Narudžbina #${order.id} je uspešno rezervisana.`;
-    },
-    error: () => {
-      this.error = `Greška prilikom rezervacije narudžbine #${order.id}.`;
-    }
-  });
-}
+    this.webService.changeOrderStatus(order.id, 'rezervisano').subscribe({
+      next: () => {
+        order.status = 'rezervisano';
+        this.message = `Narudžbina #${order.id} je uspešno rezervisana.`;
+      },
+      error: () => {
+        this.error = `Greška prilikom rezervacije narudžbine #${order.id}.`;
+      }
+    });
+  }
 
   canReview(order: Order): boolean {
     return order.status === 'preuzeto';
@@ -145,7 +145,7 @@ reserveOrder(order: Order): void {
       next: () => {
         this.message = 'Recenzija je uspešno sačuvana.';
         this.error = '';
-        this.loadOrders(); // osveži porudžbine da se prikažu nove ocene
+        this.loadOrders();
       },
       error: () => {
         this.error = 'Greška prilikom slanja recenzije.';
