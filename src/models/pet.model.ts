@@ -9,5 +9,4 @@ export interface Pet {
   origin: string;        
   price: number;        
   image_url: string;
-  reviews: Review[];
 }

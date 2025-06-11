@@ -12,21 +12,46 @@
       <p>Status: <strong>{{ order.status }}</strong></p>
       <p>Datum: {{ order.created_at | date:'short' }}</p>
 
-      <div *ngIf="canReview(order)">
-        <h6>Ostavite recenziju:</h6>
-        <label>Ocena (1-5):</label>
-        <input type="number" min="1" max="5" [(ngModel)]="reviewRatings[order.id]" />
-
-        <label>Komentar:</label>
-        <textarea rows="3" [(ngModel)]="reviewTexts[order.id]" class="form-control"></textarea>
-
-        <button class="btn btn-primary mt-2" (click)="submitReview(order)">Pošalji recenziju</button>
+      <div *ngIf="order.pets?.length">
+        <h6>Ljubimci u narudžbini:</h6>
+        <ul class="list-group mb-3">
+          <li class="list-group-item d-flex align-items-center" *ngFor="let pet of order.pets">
+            <img [src]="webService.getPetImg(pet)" alt="{{pet.name}}" class="me-3"
+             style="width: 60px; height: 60px; object-fit: cover; margin-right: 15px;"/>
+            <div>
+              <strong>{{ pet.name }}</strong> ({{ pet.species }}) - {{ pet.age }} godina
+            </div>
+          </li>
+        </ul>
       </div>
+     <button 
+  class="btn btn-primary me-2"
+  (click)="reserveOrder(order)" 
+  [disabled]="order.status !== 'u korpi'">
+  Rezerviši narudžbinu
+</button>
 
-      <div *ngIf="!canReview(order) && order.rating">
-        <p>Vaša ocena: {{ order.rating }}</p>
-        <!-- Ovde možeš prikazati i komentar ako ga čuvaš u bazi -->
-      </div>
+<button 
+  class="btn btn-danger"
+  (click)="cancelOrder(order)" 
+  [disabled]="order.status !== 'u korpi'">
+  Otkaži narudžbinu
+</button>
+
+      <!-- Prikaz forme za recenziju samo ako može da se ocenjuje -->
+<div *ngIf="canReview(order)" class="review-form">
+  <h4>Ostavi recenziju</h4>
+
+  <label>Ocena:</label>
+  <select [(ngModel)]="reviewRatings[order.id]" class="form-select" required>
+    <option *ngFor="let r of [1,2,3,4,5]" [value]="r">{{r}} zvezdica</option>
+  </select>
+
+  <label>Komentar:</label>
+  <textarea [(ngModel)]="reviewTexts[order.id]" class="form-control" rows="3"></textarea>
+
+  <button class="btn btn-primary mt-2" (click)="submitReview(order)">Pošalji recenziju</button>
+</div>
     </div>
   </div>
-</div>
+

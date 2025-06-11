@@ -61,6 +61,9 @@ export class ProfileComponent implements OnInit {
     if (this.updatedUser.password === '') {
       delete this.updatedUser.password;
     }
+    if (this.updatedUser.phone === '') {
+      delete this.updatedUser.phone;
+    }
 
     if (this.updatedUser.email !== this.user.email) {
       WebService.getInstance().checkEmailExists(this.updatedUser.email!).subscribe((exists) => {

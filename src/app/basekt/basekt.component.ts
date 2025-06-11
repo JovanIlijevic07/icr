@@ -25,7 +25,7 @@ export class BasektComponent {
   ngOnInit() {
     this.cartPets = this.cartService.getCart();
     this.totalPrice=this.cartPets.reduce((sum,pet)=>sum+Number(pet.price),0);
-    this.isLoggedIn = !!localStorage.getItem('token');
+    this.isLoggedIn = this.webService.isLoggedIn();
   }
   submitOrder() {
   const petIds = this.cartPets.map(p => p.id);

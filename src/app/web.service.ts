@@ -60,6 +60,11 @@ getUser() {
   return userJson ? JSON.parse(userJson) : null;
 }
 
+getUserID() {
+  const user = this.getUser();
+  return user?.id || null;
+}
+
   public getAllPets(): Observable<Pet[]> {
     return this.client.get<Pet[]>(this.baseUrl + '/pets');
   }
@@ -126,7 +131,7 @@ checkEmailExists(email: string) {
     return this.client.get<Order[]>(`${this.baseUrl}/orders/user/${userId}`);
   }
 
-  submitReview(orderId: number, rating: number, comment: string): Observable<any> {
+  submitReview1(orderId: number, rating: number, comment: string): Observable<any> {
     return this.client.post(`${this.baseUrl}/orders/${orderId}/review`, { rating, comment });
   }
 
@@ -164,10 +169,32 @@ checkEmailExists(email: string) {
   );
 }
 
-addToCart(userId: number, petId: number): Observable<any> {
+addToCart(userId: number, petId: number []): Observable<any> {
   return this.client.post(`${this.baseUrl}/cart/add`, {
     user_id: userId,
-    pet_id: petId
+    pet_ids: petId
+  });
+}
+
+updateOrderStatuses(userId: number) {
+  return this.client.post(`${this.baseUrl}/orders/update-statuses`, { user_id: userId });
+}
+changeOrderStatus(orderId: number, newStatus: string) {
+  return this.client.post(`${this.baseUrl}/orders/${orderId}/status`, { status: newStatus });
+}
+
+submitReview(orderId: number, rating: number | null, comment: string | null): Observable<any> {
+  const userId = this.getUserID();
+  if (!userId) {
+    throw new Error('User is not logged in');
+  }
+
+  // Rating i comment mogu biti null, prosleđuju se takvi
+  return this.client.post(`${this.baseUrl}/reviews/add`, {
+    user_id: userId,
+    order_id: orderId,
+    rating: rating,
+    comment: comment
   });
 }
 

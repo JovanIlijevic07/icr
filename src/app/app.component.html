@@ -10,6 +10,8 @@
           <li class="nav-item"><a class="nav-link" routerLink="/cats">Mačke</a></li>
           <li class="nav-item"><a class="nav-link" routerLink="/birds">Ptice</a></li>
           <li class="nav-item"><a class="nav-link" routerLink="/all">Ljubimci</a></li>
+          <li *ngIf="authService.isLoggedIn()"><a class="nav-link" routerLink="/orders">Porudzbine</a></li>
+          
         </ul>
 
         <div class="d-flex ms-auto align-items-center">

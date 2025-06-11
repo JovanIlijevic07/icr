@@ -144,34 +144,123 @@ app.post('/api/orders', async (req, res) => {
     return res.status(400).json({ error: 'user_id and pet_ids are required' });
   }
 
-  const status = 'rezervisano';
-  const now = new Date();
-  const values = pet_ids.map(pet_id => [user_id, pet_id, status, null, now]);
-
   try {
-    const [result] = await pool.query(
-      'INSERT INTO orders (user_id, pet_id, status, rating, created_at) VALUES ?',
-      [values]
+    // 1. Kreiraj novu porudžbinu
+    const [orderResult] = await pool.query(
+      'INSERT INTO orders (user_id, status) VALUES (?, ?)',
+      [user_id, 'rezervisano']
     );
-    res.json({ message: 'Orders created successfully', count: result.affectedRows });
+
+    const orderId = orderResult.insertId;
+
+    // 2. Ubaci stavke u order_items
+    const itemsValues = pet_ids.map(pet_id => [orderId, pet_id]);
+    await pool.query(
+      'INSERT INTO order_items (order_id, pet_id) VALUES ?',
+      [itemsValues]
+    );
+
+    res.status(201).json({ message: 'Porudžbina uspešno kreirana', orderId });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
 app.post('/api/cart/add', async (req, res) => {
-  const { user_id, pet_id } = req.body;
+  const { user_id, pet_ids } = req.body;
 
-  if (!user_id || !pet_id) {
-    return res.status(400).json({ error: 'user_id and pet_id are required' });
+  if (!user_id || !Array.isArray(pet_ids) || pet_ids.length === 0) {
+    return res.status(400).json({ error: 'user_id and pet_ids are required' });
   }
 
   try {
-    await pool.query("INSERT INTO orders (user_id, pet_id, status) VALUES (?, ?, 'U korpi')", [user_id, pet_id]);
-    res.status(200).json({ message: 'Ljubimac dodat u korpu' });
+    // Proveri da li postoji narudžbina sa statusom "u korpi" za ovog korisnika
+    const [existingOrders] = await pool.query(
+      'SELECT id FROM orders WHERE user_id = ? AND status = ?',
+      [user_id, 'u korpi']
+    );
+
+    let orderId;
+
+    if (existingOrders.length > 0) {
+      // Koristi postojeću narudžbinu u korpi
+      orderId = existingOrders[0].id;
+    } else {
+      // Kreiraj novu narudžbinu sa statusom "u korpi"
+      const [orderResult] = await pool.query(
+        'INSERT INTO orders (user_id, status) VALUES (?, ?)',
+        [user_id, 'u korpi']
+      );
+      orderId = orderResult.insertId;
+    }
+
+    // Dodaj sve ljubimce u order_items, ali proveri da ne dupliraš stavke
+    // (opciono: možeš dodati proveru da ne ubacuje iste pet_id više puta)
+    const itemsValues = pet_ids.map(pet_id => [orderId, pet_id]);
+
+    await pool.query(
+      'INSERT INTO order_items (order_id, pet_id) VALUES ?',
+      [itemsValues]
+    );
+
+    res.status(201).json({ message: 'Ljubimci su dodati u korpu', orderId });
+
   } catch (err) {
-    console.error("Greška prilikom dodavanja u korpu:", err);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/orders/:orderId/status', async (req, res) => {
+  const orderId = parseInt(req.params.orderId);
+  const { status } = req.body;
+
+  const allowedStatuses = ['u korpi', 'rezervisano', 'u toku', 'preuzeto', 'otkazano'];
+
+  if (!allowedStatuses.includes(status)) {
+    return res.status(400).json({ error: 'Nevažeći status porudžbine' });
+  }
+
+  try {
+    const [result] = await pool.query(
+      'UPDATE orders SET status = ? WHERE id = ?',
+      [status, orderId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Narudžbina nije pronađena' });
+    }
+
+    res.json({ message: 'Status porudžbine ažuriran' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+app.post('/api/orders/update-statuses', async (req, res) => {
+  const { user_id } = req.body;
+
+  if (!user_id) {
+    return res.status(400).json({ error: 'user_id is required' });
+  }
+
+  const sql = `
+    UPDATE orders
+    SET status = CASE
+      WHEN status = 'rezervisano' AND TIMESTAMPDIFF(DAY, created_at, NOW()) > 3 THEN 'preuzeto'
+      WHEN status = 'u toku' AND TIMESTAMPDIFF(DAY, created_at, NOW()) > 3 THEN 'preuzeto'
+      WHEN status = 'rezervisano' AND TIMESTAMPDIFF(DAY, created_at, NOW()) > 1 THEN 'u toku'
+      ELSE status
+    END
+    WHERE user_id = ?;
+  `;
+
+  try {
+    await pool.query(sql, [user_id]);
+    res.status(200).json({ message: 'Statusi porudžbina ažurirani' });
+  } catch (err) {
+    console.error('Greška pri ažuriranju statusa porudžbina:', err);
+    res.status(500).json({ error: 'Greška na serveru' });
   }
 });
 
@@ -231,12 +320,28 @@ app.put('/api/users/:id', (req, res) => {
 
 // GET - porudžbine korisnika
 app.get('/api/orders/user/:userId', async (req, res) => {
-  const userId = req.params.userId;
+  const userId = parseInt(req.params.userId, 10);
+  if (isNaN(userId)) {
+    return res.status(400).json({ message: "Neispravan userId" });
+  }
 
   const sql = `
-    SELECT orders.*, pets.name AS pet_name, pets.species
+    SELECT 
+      orders.id AS order_id,
+      orders.status,
+      orders.created_at,
+      pets.id AS pet_id,
+      pets.name AS pet_name,
+      pets.species,
+      pets.age,
+      pets.size,
+      pets.origin,
+      pets.description,
+      pets.image_url,
+      pets.price
     FROM orders
-    JOIN pets ON orders.pet_id = pets.id
+    JOIN order_items ON orders.id = order_items.order_id
+    JOIN pets ON order_items.pet_id = pets.id
     WHERE orders.user_id = ?;
   `;
 
@@ -249,6 +354,37 @@ app.get('/api/orders/user/:userId', async (req, res) => {
   }
 });
 
+app.post('/api/reviews/add', (req, res) => {
+  const { user_id, order_id, rating, comment } = req.body;
+
+  // Proveri obavezne podatke
+  if (!user_id || !order_id) {
+    return res.status(400).json({ message: 'user_id i order_id su obavezni' });
+  }
+
+  // Provera validnosti ratinga samo ako je prosleđen (nije null ili undefined)
+  if (rating !== undefined && rating !== null) {
+    if (typeof rating !== 'number' || rating < 1 || rating > 5) {
+      return res.status(400).json({ message: 'rating mora biti broj između 1 i 5 ili null' });
+    }
+  }
+
+  const sql = 'INSERT INTO reviews (user_id, order_id, rating, comment) VALUES (?, ?, ?, ?)';
+
+  // Ako rating ili comment nisu poslati, stavi null u bazu
+  db.query(sql, [
+    user_id,
+    order_id,
+    rating !== undefined ? rating : null,
+    comment !== undefined ? comment : null
+  ], (err, result) => {
+    if (err) {
+      console.error('Greška pri unosu recenzije:', err);
+      return res.status(500).json({ message: 'Greška na serveru' });
+    }
+    res.json({ message: 'Recenzija je uspešno dodata', reviewId: result.insertId });
+  });
+});
 
 
 const PORT = 3000;
